@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "defs.h"
+#include <bits/stdc++.h>
 
 struct movingObject
 {
@@ -17,21 +18,25 @@ struct movingObject
     void turnNorth()
     {
         rect.y-=speed;
+        rect.y = std::max(0, rect.y);
     }
 
     void turnSouth()
     {
         rect.y+=speed;
+        rect.y = std::min(rect.y, SCREEN_HEIGHT - rect.h);
     }
 
     void turnWest()
     {
         rect.x-=speed;
+        rect.x = std::max(rect.x, 0);
     }
 
     void turnEast()
     {
         rect.x+=speed;
+        rect.x = std:: min(rect.x, SCREEN_WIDTH - rect.w);
     }
 
     void setObject(int x, int y, int w, int h)
