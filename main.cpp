@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     graphics.init();
 
     player myPlayer;
-    myPlayer.init_and_loadTexture("img\\player.png", graphics);
+    myPlayer.init_and_loadTexture(PLAYER_FILE_PATH, graphics);
 
     SDL_Event e;
     bool quit = false;

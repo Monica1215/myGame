@@ -65,6 +65,11 @@ struct Graphics
         SDL_RenderCopy(renderer, texture, NULL, &dest);
     }
 
+    void setColor(SDL_Color color)
+    {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color. b, 0);
+    }
+
     void quit()
     {
         IMG_Quit();

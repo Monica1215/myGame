@@ -81,7 +81,9 @@ struct player
 
     void render(Graphics graphics)
     {
-        myPlayer.render(texture, graphics);
+        graphics.setColor(PLAYER_COLOR);
+        SDL_RenderFillRect(graphics.renderer, &myPlayer.rect);
+        graphics.setColor(BACKGROUND_COLOR);
     }
 
     void quit()
