@@ -23,6 +23,7 @@ public:
     void setBlendMode( SDL_BlendMode blending );
     void setAlpha( Uint8 alpha );
     void render( int x, int y, SDL_Rect* clip = nullptr, double angle = 0.0, SDL_Point* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE );
+    void renderBasic(SDL_Rect& rect);
     int getWidth() const {return mWidth; }
     int getHeight() const {return mHeight;}
 
@@ -33,5 +34,7 @@ private:
     int mWidth = 0;
     int mHeight = 0;
 };
+
+
 
 #endif // TEXTURE_H

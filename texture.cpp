@@ -1,5 +1,6 @@
 #include "texture.h"
 #include "graphics.h"
+#include "font.h"
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
@@ -81,4 +82,9 @@ void Texture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
     }
 
     SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
+}
+
+void Texture::renderBasic(SDL_Rect& rect)
+{
+    SDL_RenderCopy(gRenderer, mTexture, nullptr, &rect);
 }

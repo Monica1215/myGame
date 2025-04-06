@@ -12,7 +12,7 @@ struct Bullet
     int x = 0, y;
     int radius;
     int speed = INITIAL_BULLET_SPEED;
-    void render(SDL_Texture* texture, Graphics graphics)
+    void render(SDL_Texture* texture,const Graphics &graphics)
     {
         SDL_Rect dsc;
         dsc.x = x - radius;

@@ -3,18 +3,22 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include "defs.h"
-
+inline void logErrorAndExit(const std::string&  msg, const char* error)
+{
+    if (error != nullptr)
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s: %s", msg, error);
+    else
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s", msg);
+    SDL_Quit();
+    exit(-1);
+}
 struct Graphics
 {
     SDL_Renderer* renderer;
     SDL_Window* window;
-
-    void logErrorAndExit(const char* msg, const char* error)
-    {
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s : %s", msg, error);
-        SDL_Quit();
-    }
 
     void init()
     {
@@ -32,16 +36,27 @@ struct Graphics
         if (renderer == nullptr)
             logErrorAndExit("CreateRender", SDL_GetError());
 
+        if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+        {
+            logErrorAndExit( "SDL_mixer could not initialize! SDL_mixer Error: %s\n",
+                    Mix_GetError() );
+        }
+
+        if (TTF_Init() == -1) {
+            logErrorAndExit("SDL_ttf could not initialize! SDL_ttf Error: ",
+                             TTF_GetError());
+        }
+
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
         SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
-    void prepareScene()
+    void prepareScene() const
     {
         SDL_RenderClear(renderer);
     }
 
-    void presentScene()
+    void presentScene() const
     {
         SDL_RenderPresent(renderer);
     }
@@ -65,18 +80,21 @@ struct Graphics
         SDL_RenderCopy(renderer, texture, NULL, &dest);
     }
 
-    void setColor(SDL_Color color)
+    void setColor(SDL_Color color) const
     {
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color. b, 0);
     }
 
-    void quit()
+    ~Graphics()
     {
-        IMG_Quit();
-
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+
+        Mix_Quit();
+        IMG_Quit();
+        TTF_Quit();
         SDL_Quit();
+
     }
 };
 #endif // _GRAPHICS__H

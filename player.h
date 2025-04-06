@@ -47,7 +47,7 @@ struct movingObject
         rect.h=h;
     }
 
-    void render(SDL_Texture* texture, Graphics graphics)
+    void render(SDL_Texture* texture,const Graphics& graphics)
     {
         SDL_RenderCopy(graphics.renderer, texture, NULL, &rect);
     }
@@ -57,11 +57,10 @@ struct player
 {
     movingObject myPlayer;
     int lives = 3;
-    SDL_Texture* texture;
 
-    void init_and_loadTexture(const char* path, Graphics graphics)
+    void init()
     {
-        texture = graphics.loadTexture(path);
+
         myPlayer.setObject(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE);
         myPlayer.setSpeed(PLAYER_SPEED);
     }
@@ -79,18 +78,13 @@ struct player
         if (lives == 1) myPlayer.setObject(myPlayer.rect.x, myPlayer.rect.y, PLAYER_SIZE/2, PLAYER_SIZE/2);
     }
 
-    void render(Graphics graphics)
+    void render(const Graphics &graphics)
     {
         graphics.setColor(PLAYER_COLOR);
         SDL_RenderFillRect(graphics.renderer, &myPlayer.rect);
         graphics.setColor(BACKGROUND_COLOR);
     }
 
-    void quit()
-    {
-        SDL_DestroyTexture(texture);
-        texture = NULL;
-    }
 };
 
 #endif // _PLAYER__H

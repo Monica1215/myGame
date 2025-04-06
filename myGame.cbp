@@ -34,7 +34,10 @@
 		</Compiler>
 		<Unit filename="bullet.h" />
 		<Unit filename="defs.h" />
+		<Unit filename="font.cpp" />
+		<Unit filename="font.h" />
 		<Unit filename="graphics.h" />
+		<Unit filename="intro.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="texture.cpp" />
