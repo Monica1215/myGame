@@ -41,7 +41,6 @@ GameStates doPlaying(Graphics& graphics)
 {
 
     player myPlayer;
-    myPlayer.init();
 
     SDL_Texture* bullet_texture = graphics.loadTexture(BULLET_FILE_PATH);
 
@@ -57,11 +56,14 @@ GameStates doPlaying(Graphics& graphics)
         graphics.prepareScene();
         while (SDL_PollEvent(&e))
             if (e.type == SDL_QUIT) quit = true;
-        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-        if (currentKeyStates[SDL_SCANCODE_UP]) myPlayer.myPlayer.turnNorth();
-        if (currentKeyStates[SDL_SCANCODE_DOWN]) myPlayer.myPlayer.turnSouth();
-        if (currentKeyStates[SDL_SCANCODE_LEFT]) myPlayer.myPlayer.turnWest();
-        if (currentKeyStates[SDL_SCANCODE_RIGHT]) myPlayer.myPlayer.turnEast();
+        if (myPlayer.isDead())
+        {
+            cout << "GAME OVER";
+            quit = true;
+            break;
+        }
+        myPlayer.blink();
+        myPlayer.moveCheck();
 
         if (currentTime - lastShot > cooldown)
         {
@@ -83,13 +85,18 @@ GameStates doPlaying(Graphics& graphics)
         {
             bullet.render(bullet_texture, graphics);
         }
+        for (auto& bullet : bullets)
+        {
+            if (!myPlayer.isBlinking &&checkCollision(bullet, myPlayer))
+                myPlayer.loseLife();
+        }
 
         myPlayer.render(graphics);
         graphics.presentScene();
 
         SDL_Delay(16);
     }
-
+    SDL_DestroyTexture(bullet_texture);
     return GameStates::Quit;
 }
 

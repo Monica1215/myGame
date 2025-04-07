@@ -1,8 +1,7 @@
 #ifndef _DEFS__H
 #define _DEFS__H
 
-#define PLAYER_SPEED 5
-#define PLAYER_SIZE 20
+
 #include <SDL.h>
 #include <bits/stdc++.h>
 #define SCREEN_WIDTH 800
