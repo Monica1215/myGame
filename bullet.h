@@ -10,10 +10,20 @@
 
 struct Bullet
 {
-    int x = 0, y;
+    int x, y;
     int radius;
+    double angle;
     int speed = INITIAL_BULLET_SPEED;
-    void render(SDL_Texture* texture,const Graphics &graphics)
+
+    Bullet(int _x, int _y, int r, double _angle )
+    {
+        x = _x;
+        y = _y;
+        radius = r;
+        angle = _angle;
+    }
+
+    void render(SDL_Texture* texture,const Graphics &graphics) const
     {
         SDL_Rect dsc;
         dsc.x = x - radius;
@@ -24,7 +34,8 @@ struct Bullet
     }
     void update()
     {
-        x += speed;
+        x += speed*cos(angle);
+        y += speed*sin(angle);
     }
 
     bool isActive() const

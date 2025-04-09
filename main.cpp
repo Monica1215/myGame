@@ -6,6 +6,7 @@
 #include "player.h"
 #include "bullet.h"
 #include "intro.h"
+#include "phase1.h"
 using namespace std;
 
 void waitUntilKeyPressed()
@@ -37,66 +38,24 @@ GameStates doIntro(Graphics& graphics)
 }
 
 
-GameStates doPlaying(Graphics& graphics)
+GameStates doPlaying(const Graphics& graphics)
 {
-
     player myPlayer;
-
-    SDL_Texture* bullet_texture = graphics.loadTexture(BULLET_FILE_PATH);
-
-    SDL_Event e;
-    bool quit = false;
-
-    vector<Bullet> bullets;
-    Uint32 cooldown = 500;
-    Uint32 lastShot = 0;
-        while (!quit)
+    gamePhase currentPhase = gamePhase::Phase1;
+    while (currentPhase!=gamePhase::quit)
+    switch (currentPhase)
     {
-        Uint32 currentTime = SDL_GetTicks();
-        graphics.prepareScene();
-        while (SDL_PollEvent(&e))
-            if (e.type == SDL_QUIT) quit = true;
-        if (myPlayer.isDead())
-        {
-            cout << "GAME OVER";
-            quit = true;
+        case gamePhase::Phase1:
+            currentPhase = doPhase1(graphics, myPlayer);
             break;
-        }
-        myPlayer.blink();
-        myPlayer.moveCheck();
-
-        if (currentTime - lastShot > cooldown)
-        {
-            int y = (int)(generateRandom()*SCREEN_WIDTH);
-
-            bullets.push_back({0, y, 20,  INITIAL_BULLET_SPEED});
-            lastShot = currentTime;
-        }
-
-        for (auto& bullet: bullets)
-        {
-            bullet.update();
-        }
-
-        bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
-                    [](const Bullet& b) { return !b.isActive(); }), bullets.end());
-
-        for (auto& bullet : bullets)
-        {
-            bullet.render(bullet_texture, graphics);
-        }
-        for (auto& bullet : bullets)
-        {
-            if (!myPlayer.isBlinking &&checkCollision(bullet, myPlayer))
-                myPlayer.loseLife();
-        }
-
-        myPlayer.render(graphics);
-        graphics.presentScene();
-
-        SDL_Delay(16);
+        case gamePhase::gameOver:
+            return GameStates::GameOver;
+            break;
+        case gamePhase::quit:
+            return GameStates::Quit;
+        default:
+            return GameStates::Quit;
     }
-    SDL_DestroyTexture(bullet_texture);
     return GameStates::Quit;
 }
 
@@ -117,7 +76,15 @@ int main(int argc, char *argv[])
         case GameStates::Playing:
             current_states = doPlaying(graphics);
             break;
-        default: return -1;
+        case GameStates::GameOver:
+            current_states = GameStates::Quit;
+            cout << "GAME OVER";
+            break;
+        case GameStates::Quit:
+            cout << "QUIT";
+            break;
+        default :
+            return -1;
         }
     }
 

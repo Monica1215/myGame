@@ -60,7 +60,7 @@ struct Graphics
     {
         SDL_RenderPresent(renderer);
     }
-    SDL_Texture *loadTexture(const char* filename)
+    SDL_Texture *loadTexture(const char* filename) const
     {
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Loading %s", filename);
         SDL_Texture *texture = IMG_LoadTexture(renderer, filename);

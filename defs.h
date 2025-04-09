@@ -11,6 +11,7 @@ const SDL_Color PLAYER_COLOR = {27, 239, 255};
 const SDL_Color BACKGROUND_COLOR = {0, 0, 0};
 const SDL_Color WHITE_COLOR = {255, 255, 255, 0};
 
+#define PHASE_TIME 10000
 #define BULLET_FILE_PATH "img\\bullet.png"
 #define FONT_PATH "assets\\PixelSansSerif.ttf"
 
@@ -27,6 +28,15 @@ enum class GameStates
     Quit,
     GameOver,
     Null,
+};
+
+enum class gamePhase
+{
+    Phase1,
+    Phase2,
+    Phase3,
+    quit,
+    gameOver
 };
 
 #endif // _DEFS__H

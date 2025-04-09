@@ -1,0 +1,87 @@
+#ifndef _PHASE1__H
+#define _PHASE1__H
+
+#include <bits/stdc++.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include "bullet.h"
+#include "defs.h"
+class Phase1
+{
+    std::vector<Bullet> bullets;
+    Uint32 cooldown = 500;
+    Uint32 lastShot = 0;
+
+public:
+    void generateBullet()
+    {
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime - lastShot > cooldown)
+        {
+            Bullet bullet(0, generateRandom()*SCREEN_WIDTH, 20, 0.0);
+            bullets.push_back(bullet);
+            lastShot = currentTime;
+        }
+    }
+
+    void update()
+    {
+        for (auto& bullet : bullets)
+        {
+            bullet.update();
+        }
+        bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+                    [](const Bullet& b) { return !b.isActive(); }), bullets.end());
+
+    }
+    void render(const Graphics &graphics, SDL_Texture* bullet_texture) const
+    {
+        for (auto& bullet : bullets)
+        {
+            bullet.render(bullet_texture, graphics);
+        }
+    }
+    bool checkPhaseCollision(const player& myPlayer)
+    {
+        for (auto& bullet : bullets)
+        {
+            if (!myPlayer.isBlinking &&checkCollision(bullet, myPlayer))
+                return true;
+        }
+        return false;
+    }
+};
+
+inline gamePhase doPhase1(const Graphics& graphics, player& myPlayer)
+{
+    SDL_Texture* bullet_texture = graphics.loadTexture(BULLET_FILE_PATH);
+    Phase1 phase1;
+    SDL_Event e;
+    bool quit = false;
+    while (!quit)
+    {
+        graphics.prepareScene();
+        while (SDL_PollEvent(&e))
+            if (e.type == SDL_QUIT) quit = true;
+        if (myPlayer.isDead())
+        {
+            SDL_DestroyTexture(bullet_texture);
+            return gamePhase::gameOver;
+        }
+        myPlayer.blink();
+        myPlayer.moveCheck();
+        phase1.generateBullet();
+        phase1.update();
+        if (phase1.checkPhaseCollision(myPlayer)) myPlayer.loseLife();
+
+        myPlayer.render(graphics);
+        phase1.render(graphics, bullet_texture);
+        graphics.presentScene();
+        SDL_Delay(10);
+    }
+
+    SDL_DestroyTexture(bullet_texture);
+    return gamePhase::quit;
+}
+
+#endif // _PHASE1__
