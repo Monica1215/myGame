@@ -16,6 +16,7 @@ const SDL_Color WHITE_COLOR = {255, 255, 255, 0};
 #define FONT_PATH "assets\\PixelSansSerif.ttf"
 
 
+
 inline float generateRandom()
 {
     return (float) rand() / RAND_MAX;

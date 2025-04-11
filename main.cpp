@@ -47,8 +47,10 @@ GameStates doPlaying(const Graphics& graphics)
     switch (currentPhase)
     {
         case gamePhase::Phase1:
-            currentPhase = doPhase2(graphics, myPlayer);
+            currentPhase = doPhase1(graphics, myPlayer);
             break;
+        case gamePhase::Phase2:
+            currentPhase = doPhase2(graphics, myPlayer);
         case gamePhase::gameOver:
             return GameStates::GameOver;
             break;

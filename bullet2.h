@@ -23,12 +23,12 @@ struct BulletType2
         startTime = SDL_GetTicks();
         if (down)
         {
-            bigBullet = Bullet(3*SCREEN_WIDTH/4, 0, BIGSIZE, M_PI/2);
+            bigBullet = Bullet(generateRandom()*SCREEN_WIDTH, 0, BIGSIZE, M_PI/2);
             destinationBigBullet = SCREEN_HEIGHT/3;
         }
         else
         {
-            bigBullet = Bullet(3*SCREEN_WIDTH/4, SCREEN_HEIGHT, BIGSIZE, 3*M_PI/2);
+            bigBullet = Bullet(generateRandom()*SCREEN_WIDTH, SCREEN_HEIGHT, BIGSIZE, 3*M_PI/2);
             destinationBigBullet = 2*SCREEN_HEIGHT/3;
         }
 

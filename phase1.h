@@ -11,8 +11,13 @@ class Phase1
     std::vector<Bullet> bullets;
     Uint32 cooldown = 500;
     Uint32 lastShot = 0;
+    Uint32 startTime = 0;
 
 public:
+    Phase1()
+    {
+        startTime = SDL_GetTicks();
+    }
     void generateBullet()
     {
         Uint32 currentTime = SDL_GetTicks();
@@ -50,6 +55,12 @@ public:
         }
         return false;
     }
+
+    bool endPhase()
+    {
+        Uint32 currentTime = SDL_GetTicks();
+        return (currentTime - startTime > PHASE_TIME);
+    }
 };
 
 inline gamePhase doPhase1(const Graphics& graphics, player& myPlayer)
@@ -77,6 +88,11 @@ inline gamePhase doPhase1(const Graphics& graphics, player& myPlayer)
         myPlayer.render(graphics);
         phase1.render(graphics, bullet_texture);
         graphics.presentScene();
+        if (phase1.endPhase())
+        {
+            SDL_DestroyTexture(bullet_texture);
+            return gamePhase::Phase2;
+        }
         SDL_Delay(10);
     }
 
