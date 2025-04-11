@@ -39,6 +39,7 @@
 		<Unit filename="graphics.h" />
 		<Unit filename="intro.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="phase1.h" />
 		<Unit filename="player.h" />
 		<Unit filename="texture.cpp" />
 		<Unit filename="texture.h" />

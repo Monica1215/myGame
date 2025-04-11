@@ -6,7 +6,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include "defs.h"
-inline void logErrorAndExit(const std::string&  msg, const char* error)
+inline void logErrorAndExit(const char* msg, const char* error)
 {
     if (error != nullptr)
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s: %s", msg, error);
@@ -50,14 +50,20 @@ struct Graphics
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
         SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
+    void setColor(SDL_Color color) const
+    {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color. b, 0);
+    }
 
     void prepareScene() const
     {
+        setColor(BACKGROUND_COLOR);
         SDL_RenderClear(renderer);
     }
 
     void presentScene() const
     {
+
         SDL_RenderPresent(renderer);
     }
     SDL_Texture *loadTexture(const char* filename) const
@@ -80,10 +86,7 @@ struct Graphics
         SDL_RenderCopy(renderer, texture, NULL, &dest);
     }
 
-    void setColor(SDL_Color color) const
-    {
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color. b, 0);
-    }
+
 
     ~Graphics()
     {

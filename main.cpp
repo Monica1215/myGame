@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "intro.h"
 #include "phase1.h"
+#include "phase2.h"
 using namespace std;
 
 void waitUntilKeyPressed()
@@ -46,7 +47,7 @@ GameStates doPlaying(const Graphics& graphics)
     switch (currentPhase)
     {
         case gamePhase::Phase1:
-            currentPhase = doPhase1(graphics, myPlayer);
+            currentPhase = doPhase2(graphics, myPlayer);
             break;
         case gamePhase::gameOver:
             return GameStates::GameOver;

@@ -21,7 +21,9 @@ void Texture::loadFromFile( const std::string& path )
 
     mTexture = IMG_LoadTexture(gRenderer, path.c_str());
     if( mTexture == nullptr ) {
-        logErrorAndExit("Unable to create texture from " + path, SDL_GetError());
+        std::string s = "Unable to create texture from " + path;
+        const char* err = s.c_str();
+        logErrorAndExit(err, SDL_GetError());
     }
     SDL_QueryTexture(mTexture, NULL, NULL, &mWidth, &mHeight);
 }

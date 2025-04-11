@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define WINDOW_TITLE "Hello World!"
-const SDL_Color PLAYER_COLOR = {27, 239, 255};
+const SDL_Color PLAYER_COLOR = {27, 239, 255, 255};
 const SDL_Color BACKGROUND_COLOR = {0, 0, 0};
 const SDL_Color WHITE_COLOR = {255, 255, 255, 0};
 

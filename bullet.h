@@ -10,12 +10,17 @@
 
 struct Bullet
 {
-    int x, y;
+    float x, y;
     int radius;
     double angle;
     int speed = INITIAL_BULLET_SPEED;
 
-    Bullet(int _x, int _y, int r, double _angle )
+    Bullet()
+    {
+        x = 0; y = 0; radius = 0; angle = 0;
+    }
+
+    Bullet(float _x, float _y, int r, double _angle )
     {
         x = _x;
         y = _y;
@@ -26,8 +31,8 @@ struct Bullet
     void render(SDL_Texture* texture,const Graphics &graphics) const
     {
         SDL_Rect dsc;
-        dsc.x = x - radius;
-        dsc.y = y - radius;
+        dsc.x = static_cast<int>(x) - radius;
+        dsc.y = static_cast<int>(y) - radius;
         dsc.w = 2*radius;
         dsc.h = 2*radius;
         SDL_RenderCopy(graphics.renderer, texture, NULL, &dsc);
@@ -46,8 +51,8 @@ struct Bullet
 
 inline bool checkCollision(const Bullet& bullet, const player& myPlayer)
 {
-    int closestX = std :: clamp(bullet.x, myPlayer.rect.x, myPlayer.rect.x+myPlayer.rect.w);
-    int closestY = std :: clamp(bullet.y, myPlayer.rect.y, myPlayer.rect.y+myPlayer.rect.h);
+    int closestX = std :: clamp(static_cast<int>(bullet.x), static_cast<int>(myPlayer.rect.x), static_cast<int>(myPlayer.rect.x+myPlayer.rect.w));
+    int closestY = std :: clamp(static_cast<int>(bullet.y), static_cast<int>(myPlayer.rect.y), static_cast<int>(myPlayer.rect.y+myPlayer.rect.h));
 
     int dx = bullet.x - closestX;
     int dy = bullet.y - closestY;
