@@ -30,13 +30,16 @@ class Intro
     Sound click;
     bool music;
     bool sound;
+    Uint32 startTime;
 
         SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
         SDL_Rect music_b = {play_b.x-200, play_b.y+100, 100, 100};
         SDL_Rect sound_b = {play_b.x+200, play_b.y+100, 100, 100};
         SDL_Rect title_b = {(SCREEN_WIDTH - title.getWidth())/2, 100, title.getWidth(), title.getHeight()};
-
-
+        SDL_Rect line_dsc = {0, play_b.y - 50, SCREEN_WIDTH, 200};
+        SDL_Rect line_src = {0, 0, 0, 0};
+    SDL_Texture* line;
+    int line_time = 4000;
     public:
     Intro(const Intro&) = delete;
     Intro&operator = (const Intro&) = delete;
@@ -45,6 +48,10 @@ class Intro
     sound_on{_graphics.renderer}, sound_off{_graphics.renderer},play_button{_graphics.renderer},
     click{CLICK_SOUND_PATH}
     {
+        line = graphics.loadTexture(LINE_PATH);
+        SDL_QueryTexture(line, NULL, NULL, &line_src.w, &line_src.h);
+        startTime = SDL_GetTicks();
+
         music = 1; sound = 1;
         Font gameFont;
         gameFont.loadFromFile(FONT_PATH, title_size);
@@ -59,6 +66,11 @@ class Intro
 
     void render()
     {
+        Uint32 current = SDL_GetTicks();
+        float lineRatio = 1.0*((current - startTime)%line_time)/line_time;
+        SDL_Rect src = {0, 0, static_cast<int>(lineRatio*line_src.w), line_src.h};
+        SDL_Rect dsc = {line_dsc.x, line_dsc.y, static_cast<int>(lineRatio*line_dsc.w), line_dsc.h};
+        SDL_RenderCopy(graphics.renderer, line, &src, &dsc);
 
         title.render((SCREEN_WIDTH - title.getWidth())/2, 100);
         play_button.renderBasic(play_b);
@@ -100,6 +112,11 @@ class Intro
         return false;
     }//processClick
 
+    ~Intro()
+    {
+        SDL_DestroyTexture(line);
+        line = NULL;
+    }
 };
 
 

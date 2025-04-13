@@ -19,6 +19,7 @@ const SDL_Color ENEMY_COLOR = {255, 0 ,102, 255};
 #define CLICK_SOUND_PATH "assets\\click.wav"
 #define COLLIDE_SOUND_PATH "assets\\collide.wav"
 #define LAZER_SOUND_PATH "assets\\lazer-shot.wav"
+#define LINE_PATH "img\\line.png"
 
 inline float generateRandom()
 {

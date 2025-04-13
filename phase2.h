@@ -93,7 +93,7 @@ inline gamePhase doPhase2(const Graphics& graphics, player& myPlayer)
         phase2.update();
         if (phase2.checkPhaseCollision(myPlayer))
         {
-            collide.play();
+            if (graphics.sound) collide.play();
             myPlayer.loseLife();
         }
 
