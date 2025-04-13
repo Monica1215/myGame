@@ -12,8 +12,7 @@
 #define MUSIC_OFF "img\\music_off.png"
 #define PLAY "img\\play.png"
 
-
-const int title_size = 30;
+const int title_size = 50;
 
 bool clickIn(int x, int y, const SDL_Rect& rect)
 {
@@ -32,6 +31,12 @@ class Intro
     bool music;
     bool sound;
 
+        SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
+        SDL_Rect music_b = {play_b.x-200, play_b.y+100, 100, 100};
+        SDL_Rect sound_b = {play_b.x+200, play_b.y+100, 100, 100};
+        SDL_Rect title_b = {(SCREEN_WIDTH - title.getWidth())/2, 100, title.getWidth(), title.getHeight()};
+
+
     public:
     Intro(const Intro&) = delete;
     Intro&operator = (const Intro&) = delete;
@@ -43,7 +48,7 @@ class Intro
         music = 1; sound = 1;
         Font gameFont;
         gameFont.loadFromFile(FONT_PATH, title_size);
-        title.loadFromRenderedText("SHAPES ESCAPE", gameFont, WHITE_COLOR);
+        title.loadFromRenderedText("SHAPES ESCAPE", gameFont, ENEMY_COLOR);
 
         music_on.loadFromFile(MUSIC_ON);
         music_off.loadFromFile(MUSIC_OFF);
@@ -54,12 +59,8 @@ class Intro
 
     void render()
     {
-        SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
-        SDL_Rect music_b = {play_b.x-100, play_b.y+100, 100, 100};
-        SDL_Rect sound_b = {play_b.x+100, play_b.y+100, 100, 100};
-        graphics.prepareScene();
 
-        title.render((SCREEN_WIDTH - title.getWidth())/2, 200);
+        title.render((SCREEN_WIDTH - title.getWidth())/2, 100);
         play_button.renderBasic(play_b);
 
         if (music)
@@ -73,15 +74,11 @@ class Intro
             sound_on.renderBasic(sound_b);
         }
         else sound_off.renderBasic(sound_b);
-        graphics.presentScene();
+
     }
 
     bool processClickAndPlay(SDL_Event& e, Graphics& graphics)
     {
-        SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
-        SDL_Rect music_b = {play_b.x-100, play_b.y+100, 100, 100};
-        SDL_Rect sound_b = {play_b.x+100, play_b.y+100, 100, 100};
-
         int x, y;
         SDL_GetMouseState(&x, &y);
         if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -104,5 +101,7 @@ class Intro
     }//processClick
 
 };
+
+
 
 #endif // _INTRO__H

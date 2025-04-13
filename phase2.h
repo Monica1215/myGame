@@ -71,6 +71,7 @@ public:
 
 inline gamePhase doPhase2(const Graphics& graphics, player& myPlayer)
 {
+    Sound collide(COLLIDE_SOUND_PATH);
     SDL_Texture* bullet_texture = graphics.loadTexture(BULLET_FILE_PATH);
     Phase2 phase2;
     SDL_Event e;
@@ -82,6 +83,7 @@ inline gamePhase doPhase2(const Graphics& graphics, player& myPlayer)
             if (e.type == SDL_QUIT) quit = true;
         if (myPlayer.isDead())
         {
+            SDL_Delay(500);
             SDL_DestroyTexture(bullet_texture);
             return gamePhase::gameOver;
         }
@@ -89,7 +91,11 @@ inline gamePhase doPhase2(const Graphics& graphics, player& myPlayer)
         myPlayer.moveCheck();
         phase2.generateBullet();
         phase2.update();
-        if (phase2.checkPhaseCollision(myPlayer)) myPlayer.loseLife();
+        if (phase2.checkPhaseCollision(myPlayer))
+        {
+            collide.play();
+            myPlayer.loseLife();
+        }
 
         myPlayer.render(graphics);
         phase2.render(graphics, bullet_texture);

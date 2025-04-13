@@ -29,6 +29,7 @@ GameStates doIntro(Graphics& graphics)
     SDL_Event e;
     while (true)
     {
+        graphics.prepareScene();
         intro.render();
         if (SDL_PollEvent(&e))
         {
@@ -36,6 +37,7 @@ GameStates doIntro(Graphics& graphics)
             if (intro.processClickAndPlay(e, graphics)) return GameStates::Playing;
 
         }
+        graphics.presentScene();
         SDL_Delay(10);
     }
 }
