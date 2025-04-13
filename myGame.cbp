@@ -33,13 +33,20 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="bullet.h" />
+		<Unit filename="bullet2.h" />
 		<Unit filename="defs.h" />
 		<Unit filename="font.cpp" />
 		<Unit filename="font.h" />
 		<Unit filename="graphics.h" />
 		<Unit filename="intro.h" />
+		<Unit filename="laser_beam.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="music.cpp" />
+		<Unit filename="music.h" />
 		<Unit filename="phase1.h" />
+		<Unit filename="phase2.h" />
+		<Unit filename="phase3.h" />
+		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="texture.cpp" />
 		<Unit filename="texture.h" />

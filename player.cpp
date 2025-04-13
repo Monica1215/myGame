@@ -53,15 +53,12 @@ void player::render(const Graphics& graphics)
 
         if (visible)
         {
-        SDL_SetRenderDrawBlendMode(graphics.renderer, SDL_BLENDMODE_BLEND);
         Uint8 currentAlpha = 15;
         for (auto& trail: trails)
         {
             trail.render(currentAlpha, graphics);
             currentAlpha+=10;
         }
-
-        SDL_SetRenderDrawBlendMode(graphics.renderer, SDL_BLENDMODE_NONE);
         graphics.setColor(PLAYER_COLOR);
         SDL_RenderFillRect(graphics.renderer, &rect);
 

@@ -8,6 +8,8 @@
 #include "intro.h"
 #include "phase1.h"
 #include "phase2.h"
+#include "phase3.h"
+#include "music.h"
 using namespace std;
 
 void waitUntilKeyPressed()
@@ -31,7 +33,7 @@ GameStates doIntro(Graphics& graphics)
         if (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT) return GameStates::Quit;
-            if (intro.processClickAndPlay(e)) return GameStates::Playing;
+            if (intro.processClickAndPlay(e, graphics)) return GameStates::Playing;
 
         }
         SDL_Delay(10);
@@ -51,6 +53,9 @@ GameStates doPlaying(const Graphics& graphics)
             break;
         case gamePhase::Phase2:
             currentPhase = doPhase2(graphics, myPlayer);
+        case gamePhase::Phase3:
+            currentPhase = doPhase3(graphics, myPlayer);
+            break;
         case gamePhase::gameOver:
             return GameStates::GameOver;
             break;
@@ -68,6 +73,8 @@ int main(int argc, char *argv[])
     Graphics graphics;
     graphics.init();
 
+    Music mus {MUSIC_THEME_PATH};
+
     GameStates current_states = GameStates::Intro;
     while (current_states!=GameStates::Quit)
     {
@@ -75,6 +82,7 @@ int main(int argc, char *argv[])
         {
         case GameStates::Intro:
             current_states = doIntro(graphics);
+            if (graphics.music) mus.play();
             break;
         case GameStates::Playing:
             current_states = doPlaying(graphics);

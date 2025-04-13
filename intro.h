@@ -4,12 +4,15 @@
 #include "defs.h"
 #include "font.h"
 #include "texture.h"
+#include "music.h"
 
 #define SOUND_ON "img\\sound_on.png"
 #define SOUND_OFF "img\\sound_off.png"
 #define MUSIC_ON "img\\music_on.png"
 #define MUSIC_OFF "img\\music_off.png"
 #define PLAY "img\\play.png"
+
+
 const int title_size = 30;
 
 bool clickIn(int x, int y, const SDL_Rect& rect)
@@ -25,6 +28,7 @@ class Intro
     Texture title;
     Texture music_on, music_off, sound_on, sound_off;
     Texture play_button;
+    Sound click;
     bool music;
     bool sound;
 
@@ -33,7 +37,8 @@ class Intro
     Intro&operator = (const Intro&) = delete;
     Intro(const Graphics& _graphics) : graphics(_graphics),  title{_graphics.renderer},
     music_on{_graphics.renderer}, music_off{_graphics.renderer},
-    sound_on{_graphics.renderer}, sound_off{_graphics.renderer},play_button{_graphics.renderer}
+    sound_on{_graphics.renderer}, sound_off{_graphics.renderer},play_button{_graphics.renderer},
+    click{CLICK_SOUND_PATH}
     {
         music = 1; sound = 1;
         Font gameFont;
@@ -71,7 +76,7 @@ class Intro
         graphics.presentScene();
     }
 
-    bool processClickAndPlay(SDL_Event& e)
+    bool processClickAndPlay(SDL_Event& e, Graphics& graphics)
     {
         SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
         SDL_Rect music_b = {play_b.x-100, play_b.y+100, 100, 100};
@@ -81,16 +86,17 @@ class Intro
         SDL_GetMouseState(&x, &y);
         if (e.type == SDL_MOUSEBUTTONDOWN)
         {
+            if (graphics.sound) click.play();
             if (clickIn(x, y, play_b)) return true;
             if (clickIn(x, y, music_b))
             {
-                if (music) music = 0;
-                else music = 1;
+                music = !music;
+                graphics.music = music;
             }
             if (clickIn(x, y, sound_b))
             {
-                if (sound) sound = 0;
-                else sound = 1;
+                sound = !sound;
+                graphics.sound = sound;
             }
         }
 

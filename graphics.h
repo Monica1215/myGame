@@ -19,7 +19,8 @@ struct Graphics
 {
     SDL_Renderer* renderer;
     SDL_Window* window;
-
+    bool sound = 1;
+    bool music = 1;
     void init()
     {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -49,10 +50,11 @@ struct Graphics
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
         SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
     void setColor(SDL_Color color) const
     {
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color. b, 0);
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color. b, 255);
     }
 
     void prepareScene() const
