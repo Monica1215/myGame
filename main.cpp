@@ -10,6 +10,7 @@
 #include "phase2.h"
 #include "phase3.h"
 #include "music.h"
+#include "phaseTransition.h"
 using namespace std;
 
 void waitUntilKeyPressed()
@@ -52,9 +53,11 @@ GameStates doPlaying(const Graphics& graphics)
     {
         case gamePhase::Phase1:
             currentPhase = doPhase1(graphics, myPlayer);
+            doPhaseTransition(graphics, myPlayer);
             break;
         case gamePhase::Phase2:
             currentPhase = doPhase2(graphics, myPlayer);
+            doPhaseTransition(graphics, myPlayer);
         case gamePhase::Phase3:
             currentPhase = doPhase3(graphics, myPlayer);
             break;
