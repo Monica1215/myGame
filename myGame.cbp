@@ -34,6 +34,7 @@
 		</Compiler>
 		<Unit filename="bullet.h" />
 		<Unit filename="bullet2.h" />
+		<Unit filename="button.h" />
 		<Unit filename="defs.h" />
 		<Unit filename="font.cpp" />
 		<Unit filename="font.h" />
@@ -46,6 +47,7 @@
 		<Unit filename="phase1.h" />
 		<Unit filename="phase2.h" />
 		<Unit filename="phase3.h" />
+		<Unit filename="phaseQuit.h" />
 		<Unit filename="phaseTransition.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />

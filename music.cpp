@@ -3,7 +3,7 @@
 
 Music::Music() : gMusic{nullptr} {}
 
-Music::Music(const std::string& path) :Music()
+void Music::init(const std::string &path)
 {
     gMusic = Mix_LoadMUS(path.c_str());
     if (gMusic == nullptr) {

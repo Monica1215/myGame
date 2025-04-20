@@ -8,12 +8,12 @@ class Music {
     Mix_Music *gMusic;
 public:
     Music();
-    Music(const std::string& path);
     ~Music() ;
 
     Music(const Music&) = delete;
     Music& operator=(const Music&) = delete;
 
+    void init(const std::string &path);
     void play();
     void pause();
     void stop();

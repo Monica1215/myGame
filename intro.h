@@ -5,63 +5,51 @@
 #include "font.h"
 #include "texture.h"
 #include "music.h"
+#include "button.h"
 
 #define SOUND_ON "img\\sound_on.png"
 #define SOUND_OFF "img\\sound_off.png"
 #define MUSIC_ON "img\\music_on.png"
 #define MUSIC_OFF "img\\music_off.png"
 #define PLAY "img\\play.png"
+#define LINE_PATH "img\\line.png"
 
 const int title_size = 50;
-
-bool clickIn(int x, int y, const SDL_Rect& rect)
-{
-    if (x > rect.x+ rect.w || x < rect.x) return false;
-    if (y > rect.y+ rect.h || y < rect.y) return false;
-    return true;
-}
-
-class Intro
-{
-    const Graphics& graphics; //cop tham bien -> class ko can destructor
-    Texture title;
-    Texture music_on, music_off, sound_on, sound_off;
-    Texture play_button;
-    Sound click;
-    bool music;
-    bool sound;
-    Uint32 startTime;
-
         SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
         SDL_Rect music_b = {play_b.x-200, play_b.y+100, 100, 100};
         SDL_Rect sound_b = {play_b.x+200, play_b.y+100, 100, 100};
-        SDL_Rect title_b = {(SCREEN_WIDTH - title.getWidth())/2, 100, title.getWidth(), title.getHeight()};
+        SDL_Rect title_b = {(SCREEN_WIDTH - 100)/2, 100, 100, 100};
+
+class Intro
+{
+    Graphics& graphics;
+    Texture title;
+    Button play, music_on, music_off, sound_on, sound_off;
+    Uint32 startTime;
+
         SDL_Rect line_dsc = {0, play_b.y - 50, SCREEN_WIDTH, 200};
         SDL_Rect line_src = {0, 0, 0, 0};
+
     SDL_Texture* line;
     int line_time = 4000;
     public:
     Intro(const Intro&) = delete;
     Intro&operator = (const Intro&) = delete;
-    Intro(const Graphics& _graphics) : graphics(_graphics),  title{_graphics.renderer},
-    music_on{_graphics.renderer}, music_off{_graphics.renderer},
-    sound_on{_graphics.renderer}, sound_off{_graphics.renderer},play_button{_graphics.renderer},
-    click{CLICK_SOUND_PATH}
+    Intro(Graphics& _graphics) : graphics(_graphics),  title{_graphics.renderer},
+        play(_graphics, play_b, PLAY),
+        music_on(_graphics, music_b, MUSIC_ON),
+        music_off(_graphics, music_b, MUSIC_OFF),
+        sound_on(_graphics, sound_b, SOUND_ON),
+        sound_off(_graphics, sound_b, SOUND_OFF)
     {
         line = graphics.loadTexture(LINE_PATH);
         SDL_QueryTexture(line, NULL, NULL, &line_src.w, &line_src.h);
         startTime = SDL_GetTicks();
 
-        music = 1; sound = 1;
         Font gameFont;
         gameFont.loadFromFile(FONT_PATH, title_size);
         title.loadFromRenderedText("SHAPES ESCAPE", gameFont, ENEMY_COLOR);
 
-        music_on.loadFromFile(MUSIC_ON);
-        music_off.loadFromFile(MUSIC_OFF);
-        sound_on.loadFromFile(SOUND_ON);
-        sound_off.loadFromFile(SOUND_OFF);
-        play_button.loadFromFile(PLAY);
     }
 
     void render()
@@ -73,40 +61,49 @@ class Intro
         SDL_RenderCopy(graphics.renderer, line, &src, &dsc);
 
         title.render((SCREEN_WIDTH - title.getWidth())/2, 100);
-        play_button.renderBasic(play_b);
-
-        if (music)
+        play.render();
+        if (graphics.music)
         {
-            music_on.renderBasic(music_b);
+            music_on.render();
         }
-        else music_off.renderBasic(music_b);
+        else music_off.render();
 
-        if (sound)
+        if (graphics.sound)
         {
-            sound_on.renderBasic(sound_b);
+            sound_on.render();
         }
-        else sound_off.renderBasic(sound_b);
+        else sound_off.render();
 
     }
 
-    bool processClickAndPlay(SDL_Event& e, Graphics& graphics)
+bool processClickAndPlay(SDL_Event& e)
     {
         int x, y;
         SDL_GetMouseState(&x, &y);
-        if (e.type == SDL_MOUSEBUTTONDOWN)
+
+        if (play.processClick(graphics, e)) return true;
+
+        //music and sound
+        if (graphics.music)
         {
-            if (graphics.sound) click.play();
-            if (clickIn(x, y, play_b)) return true;
-            if (clickIn(x, y, music_b))
-            {
-                music = !music;
-                graphics.music = music;
-            }
-            if (clickIn(x, y, sound_b))
-            {
-                sound = !sound;
-                graphics.sound = sound;
-            }
+            if (music_on.processClick(graphics, e))
+                graphics.music = false;
+        }
+        else
+        {
+            if (music_off.processClick(graphics, e))
+                graphics.music = true;
+        }
+
+        if (graphics.sound)
+        {
+            if (sound_on.processClick(graphics, e))
+                graphics.sound = false;
+        }
+        else
+        {
+            if (sound_off.processClick(graphics, e))
+                graphics.sound = true;
         }
 
         return false;

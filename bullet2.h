@@ -63,7 +63,7 @@ struct BulletType2
 
     }
 
-    void render(SDL_Texture* texture,const Graphics &graphics) const
+    void render(Texture& texture,const Graphics &graphics) const
     {
         if (visible)
         {

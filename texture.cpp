@@ -63,6 +63,11 @@ void Texture::setColor( Uint8 red, Uint8 green, Uint8 blue )
     SDL_SetTextureColorMod( mTexture, red, green, blue );
 }
 
+void Texture::getColor(Uint8 &r, Uint8 &g, Uint8 &b )
+{
+    SDL_GetTextureColorMod(mTexture, &r, &g, &b);
+}
+
 void Texture::setBlendMode( SDL_BlendMode blending )
 {
     SDL_SetTextureBlendMode( mTexture, blending );
@@ -86,7 +91,7 @@ void Texture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
     SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
 }
 
-void Texture::renderBasic(SDL_Rect& rect)
+void Texture::renderBasic(const SDL_Rect& rect) const
 {
     SDL_RenderCopy(gRenderer, mTexture, nullptr, &rect);
 }

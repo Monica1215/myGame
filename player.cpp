@@ -31,7 +31,8 @@ void player::turnEast()
 
 player::player():rect{SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE}, speed(PLAYER_SPEED), lives(3)
 {
-
+    startCount = SDL_GetTicks();
+    survivedTime = 0;
 }
 
 bool player::isDead()
@@ -67,6 +68,10 @@ void player::render(const Graphics& graphics)
 
 void player::moveCheck()
 {
+        Uint32 current = SDL_GetTicks();
+        survivedTime += current - startCount;
+        startCount = current;
+
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
         if (currentKeyStates[SDL_SCANCODE_UP]) turnNorth();
         if (currentKeyStates[SDL_SCANCODE_DOWN]) turnSouth();

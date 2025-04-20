@@ -27,6 +27,7 @@ struct player
     Uint32 blinkStartTime = 0;
     bool visible = 1;
     std::deque<trailDot> trails;
+    Uint32 survivedTime, startCount;
     void turnNorth();
     void turnSouth();
     void turnWest();

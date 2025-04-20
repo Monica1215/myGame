@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include "defs.h"
 #include "player.h"
+#include "texture.h"
 
 #define INITIAL_BULLET_SPEED 3
 
@@ -28,14 +29,14 @@ struct Bullet
         angle = _angle;
     }
 
-    void render(SDL_Texture* texture,const Graphics &graphics) const
+    void render(Texture &bullet_texture,const Graphics &graphics) const
     {
         SDL_Rect dsc;
         dsc.x = static_cast<int>(x) - radius;
         dsc.y = static_cast<int>(y) - radius;
         dsc.w = 2*radius;
         dsc.h = 2*radius;
-        SDL_RenderCopy(graphics.renderer, texture, NULL, &dsc);
+        bullet_texture.renderBasic(dsc);
     }
     void update()
     {

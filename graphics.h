@@ -6,6 +6,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include "defs.h"
+#include "music.h"
 inline void logErrorAndExit(const char* msg, const char* error)
 {
     if (error != nullptr)
@@ -21,6 +22,7 @@ struct Graphics
     SDL_Window* window;
     bool sound = 1;
     bool music = 1;
+    Music mus;
     void init()
     {
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -51,6 +53,8 @@ struct Graphics
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
         SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        mus.init(MUSIC_THEME_PATH);
+
     }
     void setColor(SDL_Color color) const
     {

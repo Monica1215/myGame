@@ -10,14 +10,19 @@
 #include "phase2.h"
 #include "laser_beam.h"
 
-class Phase3
+struct Phase3
 {
     std::vector<laserBeam> beams;
-    Uint32 cooldown = 1000;
+    Uint32 cooldown = 500;
     Uint32 lastShot = 0;
+    Uint32 lastCount = 0;
+    Uint32 phaseTime = 0;
     bool vertical = 1;
 
-public:
+    Phase3()
+    {
+        lastCount = SDL_GetTicks();
+    }
     void generateBeam()
     {
         Uint32 currentTime = SDL_GetTicks();
@@ -33,8 +38,13 @@ public:
             lastShot = currentTime;
         }
     }
-void update()
-{
+    void update()
+    {
+
+        Uint32 current = SDL_GetTicks();
+        phaseTime += current-lastCount;
+        lastCount = current;
+
     for (auto& beam : beams) {
         beam.update();
     }
@@ -60,23 +70,35 @@ void update()
     }
 };
 
-inline gamePhase doPhase3(const Graphics& graphics, player& myPlayer)
+inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
 {
     Sound collide(COLLIDE_SOUND_PATH);
     Sound lazer(LAZER_SOUND_PATH);
-    SDL_Texture* bullet_texture = graphics.loadTexture(BULLET_FILE_PATH);
+    Texture bullet_texture(graphics.renderer);
+    bullet_texture.loadFromFile(BULLET_FILE_PATH);
     Phase2 phase2;
     Phase3 phase3;
     SDL_Event e;
-    bool quit = false;
-    while (!quit)
+    while (true)
     {
         graphics.prepareScene();
         while (SDL_PollEvent(&e))
-            if (e.type == SDL_QUIT) quit = true;
+            if (e.type == SDL_QUIT)
+            {
+                Uint32 pauseStart = SDL_GetTicks();
+                if (graphics.music) graphics.mus.pause();
+                quitRespond res = doPhaseQuit(graphics);
+
+                if (res == quitRespond::quit) return gamePhase::quit;
+                if (graphics.music) graphics.mus.play();
+
+                Uint32 pauseDuration = SDL_GetTicks() - pauseStart;
+                phase3.phaseTime -=  pauseDuration;
+                phase3.lastShot += pauseDuration;
+                myPlayer.survivedTime -= pauseDuration;
+            }
         if (myPlayer.isDead())
         {
-            SDL_DestroyTexture(bullet_texture);
             SDL_Delay(500);
             return gamePhase::gameOver;
         }
@@ -106,7 +128,6 @@ inline gamePhase doPhase3(const Graphics& graphics, player& myPlayer)
         SDL_Delay(10);
     }
 
-    SDL_DestroyTexture(bullet_texture);
     return gamePhase::quit;
 }
 

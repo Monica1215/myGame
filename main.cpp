@@ -11,6 +11,8 @@
 #include "phase3.h"
 #include "music.h"
 #include "phaseTransition.h"
+#include "phaseQuit.h"
+#include "button.h"
 using namespace std;
 
 void waitUntilKeyPressed()
@@ -35,7 +37,7 @@ GameStates doIntro(Graphics& graphics)
         if (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT) return GameStates::Quit;
-            if (intro.processClickAndPlay(e, graphics)) return GameStates::Playing;
+            if (intro.processClickAndPlay(e)) return GameStates::Playing;
 
         }
         graphics.presentScene();
@@ -44,7 +46,7 @@ GameStates doIntro(Graphics& graphics)
 }
 
 
-GameStates doPlaying(const Graphics& graphics)
+GameStates doPlaying(Graphics& graphics)
 {
     player myPlayer;
     gamePhase currentPhase = gamePhase::Phase1;
@@ -53,11 +55,11 @@ GameStates doPlaying(const Graphics& graphics)
     {
         case gamePhase::Phase1:
             currentPhase = doPhase1(graphics, myPlayer);
-            doPhaseTransition(graphics, myPlayer);
+            doPhaseTransition(graphics, myPlayer, currentPhase);
             break;
         case gamePhase::Phase2:
             currentPhase = doPhase2(graphics, myPlayer);
-            doPhaseTransition(graphics, myPlayer);
+            doPhaseTransition(graphics, myPlayer, currentPhase);
         case gamePhase::Phase3:
             currentPhase = doPhase3(graphics, myPlayer);
             break;
@@ -78,8 +80,6 @@ int main(int argc, char *argv[])
     Graphics graphics;
     graphics.init();
 
-    Music mus {MUSIC_THEME_PATH};
-
     GameStates current_states = GameStates::Intro;
     while (current_states!=GameStates::Quit)
     {
@@ -87,7 +87,8 @@ int main(int argc, char *argv[])
         {
         case GameStates::Intro:
             current_states = doIntro(graphics);
-            if (graphics.music) mus.play();
+            if (graphics.music)
+                graphics.mus.play();
             break;
         case GameStates::Playing:
             current_states = doPlaying(graphics);
@@ -104,6 +105,6 @@ int main(int argc, char *argv[])
         }
     }
 
-
+    //doPhaseQuit(graphics);
     return 0;
 }
