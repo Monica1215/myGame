@@ -63,16 +63,16 @@ struct BulletType2
 
     }
 
-    void render(Texture& texture,const Graphics &graphics) const
+    void render(const Texture& texture) const
     {
         if (visible)
         {
-            bigBullet.render(texture, graphics);
+            bigBullet.render(texture);
         }
         else
         {
             for (auto &b:smallBullet)
-                b.render(texture, graphics);
+                b.render(texture);
         }
     }
 

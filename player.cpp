@@ -68,6 +68,7 @@ void player::render(const Graphics& graphics)
 
 void player::moveCheck()
 {
+        blink();
         Uint32 current = SDL_GetTicks();
         survivedTime += current - startCount;
         startCount = current;
@@ -92,7 +93,7 @@ void player::blink()
         Uint32 currentTime = SDL_GetTicks();
         Uint32 timeBlinked = currentTime - blinkStartTime;
 
-        if (timeBlinked < 2000)
+        if (timeBlinked < BLINKING_TIME)
         {
             visible = (timeBlinked/200)%2 != 0;
         }

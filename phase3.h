@@ -17,14 +17,16 @@ struct Phase3
     Uint32 lastShot = 0;
     Uint32 lastCount = 0;
     Uint32 phaseTime = 0;
+    Phase2 phase2;
     bool vertical = 1;
 
-    Phase3()
+    Phase3(const Graphics &graphics) : phase2(graphics)
     {
         lastCount = SDL_GetTicks();
     }
-    void generateBeam()
+    void generateBullet()
     {
+        //generate beam
         Uint32 currentTime = SDL_GetTicks();
         if (currentTime - lastShot > cooldown)
         {
@@ -37,28 +39,44 @@ struct Phase3
             vertical = !vertical;
             lastShot = currentTime;
         }
+
+        // generate phase 2 bullet
+        phase2.generateBullet();
     }
     void update()
     {
-
         Uint32 current = SDL_GetTicks();
         phaseTime += current-lastCount;
         lastCount = current;
 
-    for (auto& beam : beams) {
+        for (auto& beam : beams) {
         beam.update();
+        }
+
+        beams.erase(std::remove_if(beams.begin(), beams.end(),
+                [](const laserBeam& b) { return !b.isActive(); }), beams.end());
+
+        phase2.update();
     }
 
-    beams.erase(std::remove_if(beams.begin(), beams.end(),
-                [](const laserBeam& b) { return !b.isActive(); }), beams.end());
-}
     void render(const Graphics &graphics)
     {
+
+        SDL_SetRenderDrawColor(graphics.renderer,ENEMY_COLOR.r, ENEMY_COLOR.g, ENEMY_COLOR.b, 50);
         for (auto& beam : beams)
         {
             beam.render(graphics);
         }
+        phase2.render();
     }
+
+    void updateTimePause(Uint32 pauseDuration)
+    {
+        lastShot += pauseDuration;
+        phaseTime -= pauseDuration;
+        phase2.updateTimePause(pauseDuration);
+    }
+
     bool checkPhaseCollision(const player& myPlayer)////////////////
     {
         if (myPlayer.isBlinking) return false;
@@ -66,7 +84,7 @@ struct Phase3
         {
             if (checkCollision(beam, myPlayer)) return true;
         }
-        return false;
+        return (phase2.checkPhaseCollision(myPlayer));
     }
 };
 
@@ -76,8 +94,7 @@ inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
     Sound lazer(LAZER_SOUND_PATH);
     Texture bullet_texture(graphics.renderer);
     bullet_texture.loadFromFile(BULLET_FILE_PATH);
-    Phase2 phase2;
-    Phase3 phase3;
+    Phase3 phase3(graphics);
     SDL_Event e;
     while (true)
     {
@@ -94,25 +111,17 @@ inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
 
                 Uint32 pauseDuration = SDL_GetTicks() - pauseStart;
                 phase3.phaseTime -=  pauseDuration;
-                phase3.lastShot += pauseDuration;
-                myPlayer.survivedTime -= pauseDuration;
+                phase3.updateTimePause(pauseDuration);
+                myPlayer.updateTimePause(pauseDuration);
             }
         if (myPlayer.isDead())
         {
             SDL_Delay(500);
             return gamePhase::gameOver;
         }
-        myPlayer.blink();
         myPlayer.moveCheck();
-        phase2.generateBullet();
-        phase2.update();
-        if (phase2.checkPhaseCollision(myPlayer))
-        {
-            if (graphics.sound) collide.play();
-            myPlayer.loseLife();
-        }
 
-        phase3.generateBeam();
+        phase3.generateBullet();
         phase3.update();
         if (phase3.checkPhaseCollision(myPlayer))
         {
@@ -121,8 +130,6 @@ inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
         }
 
         myPlayer.render(graphics);
-        phase2.render(graphics, bullet_texture);
-        SDL_SetRenderDrawColor(graphics.renderer,ENEMY_COLOR.r, ENEMY_COLOR.g, ENEMY_COLOR.b, 50);
         phase3.render(graphics);
         graphics.presentScene();
         SDL_Delay(10);

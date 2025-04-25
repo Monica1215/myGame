@@ -29,7 +29,7 @@ struct Bullet
         angle = _angle;
     }
 
-    void render(Texture &bullet_texture,const Graphics &graphics) const
+    void render(const Texture &bullet_texture) const
     {
         SDL_Rect dsc;
         dsc.x = static_cast<int>(x) - radius;

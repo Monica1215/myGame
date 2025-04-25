@@ -15,8 +15,11 @@ struct Phase1
     Uint32 lastCount = 0;
     Uint32 phaseTime = 0;
 
-    Phase1()
+    Texture bullet_texture;
+
+    Phase1(const Graphics &graphics): bullet_texture(graphics.renderer)
     {
+        bullet_texture.loadFromFile(BULLET_FILE_PATH);
         lastCount = SDL_GetTicks();
     }
     void generateBullet()
@@ -44,13 +47,20 @@ struct Phase1
                     [](const Bullet& b) { return !b.isActive(); }), bullets.end());
 
     }
-    void render(const Graphics &graphics, Texture& bullet_texture) const
+    void render() const
     {
         for (auto& bullet : bullets)
         {
-            bullet.render(bullet_texture, graphics);
+            bullet.render(bullet_texture);
         }
     }
+
+    void updateTimePause(Uint32 pauseDuration)
+    {
+        lastShot += pauseDuration;
+        phaseTime -= pauseDuration;
+    }
+
     bool checkPhaseCollision(const player& myPlayer)
     {
         for (auto& bullet : bullets)
@@ -69,9 +79,8 @@ struct Phase1
 
 inline gamePhase doPhase1(Graphics& graphics, player& myPlayer)
 {
-    Texture bullet_texture(graphics.renderer);
-    bullet_texture.loadFromFile(BULLET_FILE_PATH);
-    Phase1 phase1;
+
+    Phase1 phase1(graphics);
     SDL_Event e;
     Sound collide(COLLIDE_SOUND_PATH);
     while (true)
@@ -88,16 +97,14 @@ inline gamePhase doPhase1(Graphics& graphics, player& myPlayer)
                 if (graphics.music) graphics.mus.play();
 
                 Uint32 pauseDuration = SDL_GetTicks() - pauseStart;
-                phase1.phaseTime -=  pauseDuration;
-                phase1.lastShot += pauseDuration;
-                myPlayer.survivedTime -= pauseDuration;
+                phase1.updateTimePause(pauseDuration);
+                myPlayer.updateTimePause(pauseDuration);
             }
         if (myPlayer.isDead())
         {
             SDL_Delay(500);
             return gamePhase::gameOver;
         }
-        myPlayer.blink();
         myPlayer.moveCheck();
         phase1.generateBullet();
         phase1.update();
@@ -108,7 +115,7 @@ inline gamePhase doPhase1(Graphics& graphics, player& myPlayer)
         }
 
         myPlayer.render(graphics);
-        phase1.render(graphics, bullet_texture);
+        phase1.render();
         graphics.presentScene();
         if (phase1.endPhase())
         {

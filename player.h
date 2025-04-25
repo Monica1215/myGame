@@ -10,6 +10,7 @@
 #define PLAYER_SPEED 5
 #define PLAYER_SIZE 20
 #define number_of_trail 15
+#define BLINKING_TIME 2000
 struct trailDot
 {
     SDL_Rect rect;
@@ -38,6 +39,10 @@ struct player
     void render(const Graphics& graphics);
     void moveCheck();
     void blink();
+    void updateTimePause(Uint32 pauseDuration)
+    {
+        survivedTime -= pauseDuration;
+    }
 };
 
 
