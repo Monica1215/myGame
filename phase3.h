@@ -86,12 +86,16 @@ struct Phase3
         }
         return (phase2.checkPhaseCollision(myPlayer));
     }
+
+    bool endPhase()
+    {
+        return (phaseTime > PHASE_TIME);
+    }
 };
 
 inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
 {
     Sound collide(COLLIDE_SOUND_PATH);
-    Sound lazer(LAZER_SOUND_PATH);
     Texture bullet_texture(graphics.renderer);
     bullet_texture.loadFromFile(BULLET_FILE_PATH);
     Phase3 phase3(graphics);
@@ -110,7 +114,6 @@ inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
                 if (graphics.music) graphics.mus.play();
 
                 Uint32 pauseDuration = SDL_GetTicks() - pauseStart;
-                phase3.phaseTime -=  pauseDuration;
                 phase3.updateTimePause(pauseDuration);
                 myPlayer.updateTimePause(pauseDuration);
             }
@@ -125,13 +128,17 @@ inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
         phase3.update();
         if (phase3.checkPhaseCollision(myPlayer))
         {
-            if(graphics.sound) lazer.play();
+            if(graphics.sound) collide.play();
             myPlayer.loseLife();
         }
 
         myPlayer.render(graphics);
         phase3.render(graphics);
         graphics.presentScene();
+        if (phase3.endPhase())
+        {
+            return gamePhase::Phase4;
+        }
         SDL_Delay(10);
     }
 

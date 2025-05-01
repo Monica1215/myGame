@@ -9,6 +9,7 @@
 #include "phase1.h"
 #include "phase2.h"
 #include "phase3.h"
+#include "phase4.h"
 #include "music.h"
 #include "phaseTransition.h"
 #include "phaseQuit.h"
@@ -49,19 +50,22 @@ GameStates doIntro(Graphics& graphics)
 GameStates doPlaying(Graphics& graphics)
 {
     player myPlayer;
-    gamePhase currentPhase = gamePhase::Phase1;
+    gamePhase currentPhase = gamePhase::Phase4;
     while (currentPhase!=gamePhase::quit)
     switch (currentPhase)
     {
         case gamePhase::Phase1:
-            currentPhase = doPhase1(graphics, myPlayer);
             doPhaseTransition(graphics, myPlayer, currentPhase);
+            currentPhase = doPhase1(graphics, myPlayer);
             break;
         case gamePhase::Phase2:
-            currentPhase = doPhase2(graphics, myPlayer);
             doPhaseTransition(graphics, myPlayer, currentPhase);
+            currentPhase = doPhase2(graphics, myPlayer);
         case gamePhase::Phase3:
             currentPhase = doPhase3(graphics, myPlayer);
+            break;
+        case gamePhase::Phase4:
+            currentPhase = doPhase4(graphics, myPlayer);
             break;
         case gamePhase::gameOver:
             return GameStates::GameOver;

@@ -34,11 +34,11 @@ struct laserBeam
 
         if (vertical)
         {
-            rect = { t, 0, LASER_WIDTH, SCREEN_HEIGHT };
+            rect = {t, 0, LASER_WIDTH, SCREEN_HEIGHT };
         }
         else
         {
-            rect = { 0, t, SCREEN_WIDTH, LASER_WIDTH };
+            rect = {0, t, SCREEN_WIDTH, LASER_WIDTH };
         }
     }
 

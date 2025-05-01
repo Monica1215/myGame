@@ -35,6 +35,7 @@
 		<Unit filename="bullet.h" />
 		<Unit filename="bullet2.h" />
 		<Unit filename="button.h" />
+		<Unit filename="circle_bomb.h" />
 		<Unit filename="defs.h" />
 		<Unit filename="font.cpp" />
 		<Unit filename="font.h" />
