@@ -19,18 +19,7 @@ enum class gameOverRespond
     none
 };
 
-std::string secondToTimer(int totalSeconds)
-{
-    int seconds = totalSeconds%60;
-    int minutes = (totalSeconds/60)%60;
-    int hours = totalSeconds/3600;
 
-    std::ostringstream oss;
-    oss << std::setw(2) << std::setfill('0') << hours << ":"
-        << std::setw(2) << std::setfill('0') << minutes << ":"
-        << std::setw(2) << std::setfill('0') << seconds;
-    return oss.str();
-}
 class GameOver
 {
     Graphics &graphics;
@@ -48,6 +37,9 @@ class GameOver
     {
         Font gameFont;
         gameFont.loadFromFile("assets\\Random Wednesday.ttf", 30);
+
+        Font gameFont2;
+        gameFont2.loadFromFile("assets\\Random Wednesday.ttf", 120);
 
         Uint32 highScore;
         std::ifstream inFile("highscore.txt");
@@ -70,7 +62,7 @@ class GameOver
         int seconds = myPlayer.survivedTime/1000;
         int highScoreSeconds = highScore/1000;
 
-        title.loadFromRenderedText("Game Over!", gameFont, WHITE_COLOR);
+        title.loadFromRenderedText("Game Over!", gameFont2, WHITE_COLOR);
         survived.loadFromRenderedText("Time survived: "+secondToTimer(seconds), gameFont, WHITE_COLOR);
         bestPlay.loadFromRenderedText("Best play: "+secondToTimer(highScoreSeconds), gameFont, WHITE_COLOR);
 

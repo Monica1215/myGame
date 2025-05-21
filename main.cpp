@@ -107,15 +107,17 @@ int main(int argc, char *argv[])
     Graphics graphics;
     graphics.init();
 
-    player myPlayer;
-
+    player myPlayer(graphics);
+    Uint32 start;
     GameStates current_states = GameStates::Intro;
     while (current_states!=GameStates::Quit)
     {
         switch (current_states)
         {
         case GameStates::Intro:
+            start = SDL_GetTicks();
             current_states = doIntro(graphics);
+            myPlayer.updateTimePause(SDL_GetTicks() - start);
             break;
         case GameStates::Playing:
             cout << boolalpha << myPlayer.isDead();
@@ -125,7 +127,7 @@ int main(int argc, char *argv[])
             current_states = doGameOver(graphics, myPlayer);
             cout << static_cast<int>(current_states);
             cout << "GAME OVER";
-            myPlayer.reset();
+            myPlayer.reset(graphics);
             break;
         case GameStates::Quit:
             cout << "QUIT";

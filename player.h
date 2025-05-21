@@ -6,6 +6,8 @@
 #include "defs.h"
 #include <bits/stdc++.h>
 #include "graphics.h"
+#include "texture.h"
+#include "font.h"
 
 #define PLAYER_SPEED 5
 #define PLAYER_SIZE 20
@@ -42,6 +44,8 @@ struct player
 
     //for score
     Uint32 survivedTime, startCount;
+    Texture score; int lastScore;
+    Font gameFont;
 
     //for dashing
     bool isDashing = false;
@@ -50,7 +54,7 @@ struct player
     Uint32 lastDash;
 
 
-    player();
+    player(Graphics &graphics);
     bool isDead();
     void loseLife();
     void render(const Graphics& graphics);
@@ -64,10 +68,8 @@ struct player
     {
         survivedTime -= pauseDuration;
     }
-    void reset()
-    {
-        *this = player();
-    }
+    void reset(Graphics &graphics);
+
 };
 
 

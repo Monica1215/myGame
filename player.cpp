@@ -2,10 +2,10 @@
 #include <SDL_image.h>
 #include "defs.h"
 #include <bits/stdc++.h>
-
 #include "player.h"
 
-player::player()
+
+player::player(Graphics &graphics): score(graphics.renderer)
 {
     rect = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE};
     speed = PLAYER_SPEED;
@@ -19,11 +19,36 @@ player::player()
     isDashing = false;
     lastVx = 0; lastVy = 0;
     lastDash = 0;
+
+    lastScore = 0;
+    gameFont.loadFromFile("assets\\Random Wednesday.ttf", 30);
+    score.loadFromRenderedText(secondToTimer(lastScore), gameFont, WHITE_COLOR);
+
 }
 
 bool player::isDead()
 {
     return (lives<=0);
+}
+
+void player::reset(Graphics &graphics)
+{
+    rect = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE};
+    speed = PLAYER_SPEED;
+    lives = 3;
+    isBlinking = false;
+    blinkStartTime = 0;
+    visible = true;
+    trails.clear();
+    survivedTime = 0;
+    startCount = SDL_GetTicks();
+    isDashing = false;
+    lastVx = 0; lastVy = 0;
+    lastDash = 0;
+
+    lastScore = 0;
+    gameFont.loadFromFile("assets\\Random Wednesday.ttf", 30);
+    score.loadFromRenderedText(secondToTimer(lastScore), gameFont, WHITE_COLOR);
 }
 
 void player::loseLife()
@@ -51,6 +76,15 @@ void player::render(const Graphics& graphics)
         SDL_RenderFillRect(graphics.renderer, &rect);
 
         }
+
+        int survivedSeconds = survivedTime/1000;
+        if (survivedSeconds!=lastScore)
+        {
+            lastScore = survivedSeconds;
+            score.loadFromRenderedText(secondToTimer(lastScore), gameFont, WHITE_COLOR);
+        }
+        score.render(700, 30);
+
 }
 
 void player::moveCheck()

@@ -23,6 +23,7 @@ const int title_size = 160;
 class Intro
 {
     Graphics& graphics;
+    Texture background;
     Texture title;
     Button play, music_on, music_off, sound_on, sound_off;
     Uint32 startTime;
@@ -35,7 +36,7 @@ class Intro
     public:
     Intro(const Intro&) = delete;
     Intro&operator = (const Intro&) = delete;
-    Intro(Graphics& _graphics) : graphics(_graphics),  title{_graphics.renderer},
+    Intro(Graphics& _graphics) : graphics(_graphics),background{_graphics.renderer}, title{_graphics.renderer},
         play(_graphics, play_b, PLAY),
         music_on(_graphics, music_b, MUSIC_ON),
         music_off(_graphics, music_b, MUSIC_OFF),
@@ -48,12 +49,14 @@ class Intro
 
         Font gameFont;
         gameFont.loadFromFile("assets\\Random Wednesday.ttf", title_size);
+        background.loadFromFile("img\\background.png");
         title.loadFromRenderedText("Shapes Escape", gameFont, ENEMY_COLOR);
 
     }
 
     void render()
     {
+        background.renderBasic({0, 0, SCREEN_WIDTH, SCREEN_HEIGHT});
         Uint32 current = SDL_GetTicks();
         float lineRatio = 1.0*((current - startTime)%line_time)/line_time;
         SDL_Rect src = {0, 0, static_cast<int>(lineRatio*line_src.w), line_src.h};

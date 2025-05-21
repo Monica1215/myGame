@@ -8,8 +8,9 @@
 
 #define BOMB_RADIUS 80
 #define TELEGRAPH_BOMB_TIME 1000
-#define EXPANDING_BOMB_TIME 500
+#define EXPANDING_BOMB_TIME 600
 #define SHRINKING_BOMB_TIME 200
+#define STILL_BOMB_TIME 100
 
 
 #define TELEGRAPH_BOMB_PATH "img\\warning_circle.png"
@@ -18,6 +19,7 @@ enum class BombPhase
 {
     Telegraph,
     Expanding,
+    Still,
     Shrinking,
     Done
 };
@@ -28,6 +30,7 @@ struct circleBomb
     int radius;
     Uint32 phaseStartTime;
     BombPhase phase = BombPhase::Telegraph;
+    Uint8 alpha = 255;
 
     circleBomb()
     {
@@ -54,10 +57,24 @@ struct circleBomb
         case BombPhase::Expanding:
             if (elapsed > EXPANDING_BOMB_TIME)
             {
+                phase = BombPhase::Still;
+                phaseStartTime = now;
+                alpha = 255;
+                radius = BOMB_RADIUS;
+            }
+            else
+            {
+                radius = BOMB_RADIUS*1.0*elapsed/EXPANDING_BOMB_TIME;
+                bool visible = (elapsed/200)%2 != 0;
+                if (visible) alpha = 255; else alpha = 100;
+            }
+            break;
+        case BombPhase::Still:
+            if (elapsed > STILL_BOMB_TIME)
+            {
                 phase = BombPhase::Shrinking;
                 phaseStartTime = now;
             }
-            else radius = BOMB_RADIUS*1.0*elapsed/EXPANDING_BOMB_TIME;
             break;
         case BombPhase::Shrinking:
             if (elapsed > SHRINKING_BOMB_TIME)
@@ -73,7 +90,7 @@ struct circleBomb
         }
     }
 
-    void render(const Texture& bullet,const Texture& telegraph) const
+    void render(Texture& bullet, Texture& telegraph) const
     {
         SDL_Rect dsc = {x-radius, y-radius, 2*radius, 2*radius};
 
@@ -83,7 +100,9 @@ struct circleBomb
             telegraph.renderBasic(dsc);
             break;
         case BombPhase::Expanding:
+        case BombPhase::Still:
         case BombPhase::Shrinking:
+            bullet.setAlpha(alpha);
             bullet.renderBasic(dsc);
             break;
         default:
@@ -97,7 +116,7 @@ struct circleBomb
     }
     bool isHarmful() const
     {
-        return (phase == BombPhase::Expanding || phase == BombPhase::Shrinking);
+        return (phase == BombPhase::Expanding || phase == BombPhase::Shrinking || phase == BombPhase::Still);
     }
 };
 

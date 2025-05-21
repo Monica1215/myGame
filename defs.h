@@ -8,7 +8,7 @@
 #define SCREEN_HEIGHT 600
 #define WINDOW_TITLE "SHAPE ESCAPE"
 const SDL_Color PLAYER_COLOR = {27, 239, 255, 255};
-const SDL_Color BACKGROUND_COLOR = {0, 0, 0};
+const SDL_Color BACKGROUND_COLOR = {0, 19, 24};
 const SDL_Color WHITE_COLOR = {255, 255, 255, 0};
 const SDL_Color ENEMY_COLOR = {255, 0 ,102, 255};
 
@@ -25,6 +25,19 @@ const std::string MUSIC_THEME_PATH = "assets\\popstar_love.mp3";
 inline float generateRandom()
 {
     return (float) rand() / RAND_MAX;
+}
+
+inline std::string secondToTimer(int totalSeconds)
+{
+    int seconds = totalSeconds%60;
+    int minutes = (totalSeconds/60)%60;
+    int hours = totalSeconds/3600;
+
+    std::ostringstream oss;
+    if (hours>0) oss << std::setw(2) << std::setfill('0') << hours << ":";
+    oss    << std::setw(2) << std::setfill('0') << minutes << ":"
+        << std::setw(2) << std::setfill('0') << seconds;
+    return oss.str();
 }
 
 enum class GameStates

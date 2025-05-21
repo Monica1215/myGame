@@ -2,13 +2,8 @@
 #define _PHASE4__H
 
 #include <bits/stdc++.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include "bullet.h"
 #include "defs.h"
-#include "bullet2.h"
-#include "phase2.h"
-#include "laser_beam.h"
+#include "phase3.h"
 #include "texture.h"
 #include "circle_bomb.h"
 
@@ -20,11 +15,12 @@ struct Phase4
     Uint32 lastShot = 0;
     Uint32 lastCount = 0;
     Uint32 phaseTime = 0;
+    Phase3 phase3;
 
     Texture bullet_texture;
     Texture telegraph_texture;
 
-    Phase4(const Graphics &graphics, int &gameLoop): bullet_texture(graphics.renderer), telegraph_texture(graphics.renderer)
+    Phase4(const Graphics &graphics, int &gameLoop): phase3(graphics, gameLoop), bullet_texture(graphics.renderer), telegraph_texture(graphics.renderer)
     {
         bullet_texture.loadFromFile(BULLET_FILE_PATH);
         telegraph_texture.loadFromFile(TELEGRAPH_BOMB_PATH);
@@ -42,6 +38,7 @@ struct Phase4
             bombs.push_back(b);
             lastShot = now;
         }
+        phase3.generateBullet();
     }
 
     void update()
@@ -57,14 +54,16 @@ struct Phase4
 
         bombs.erase(std::remove_if(bombs.begin(), bombs.end(),
                     [](const circleBomb& b) { return !b.isActive(); }), bombs.end());
+        phase3.update();
     }
 
-    void render() const
+    void render(Graphics &graphics)
     {
         for (auto &b : bombs)
         {
             b.render(bullet_texture, telegraph_texture);
         }
+        phase3.render(graphics);
     }
 
     void updateTimePause(Uint32 pauseDuration)
@@ -79,7 +78,7 @@ struct Phase4
         {
             if (checkCollision(b, myPlayer)) return true;
         }
-        return false;
+        return (phase3.checkPhaseCollision(myPlayer));
     }
 
     bool endPhase()
@@ -125,7 +124,7 @@ inline gamePhase doPhase4(Graphics& graphics, player& myPlayer, int &gameLoop)
         }
 
         myPlayer.render(graphics);
-        phase4.render();
+        phase4.render(graphics);
         graphics.presentScene();
         if (phase4.endPhase())
         {

@@ -41,6 +41,7 @@
 		<Unit filename="font.h" />
 		<Unit filename="gameOver.h" />
 		<Unit filename="graphics.h" />
+		<Unit filename="highscore.txt" />
 		<Unit filename="intro.h" />
 		<Unit filename="laser_beam.h" />
 		<Unit filename="main.cpp" />

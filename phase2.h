@@ -2,9 +2,6 @@
 #define _PHASE2__H
 
 #include <bits/stdc++.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include "bullet.h"
 #include "defs.h"
 #include "bullet2.h"
 
