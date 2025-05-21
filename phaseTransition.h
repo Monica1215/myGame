@@ -51,6 +51,7 @@ public:
 
 inline gamePhase doPhaseTransition(const Graphics &graphics, player &myPlayer, gamePhase current)
 {
+    if (myPlayer.isDead()) return gamePhase::gameOver;
     if (current == gamePhase::quit) return current;
     Uint32 startTime = SDL_GetTicks();
     std::vector<Ripple> ripples;
@@ -94,7 +95,7 @@ inline gamePhase doPhaseTransition(const Graphics &graphics, player &myPlayer, g
         SDL_Delay(10);
         if (currentShot - startTime > TRANSITION_DURATION) return current;
     }
-    return gamePhase::quit;
+    return current;
 }
 
 #endif // _PHASE_TRANSITION__H

@@ -16,7 +16,7 @@
 struct Phase4
 {
     std :: vector<circleBomb> bombs;
-    Uint32 cooldown = 1000;
+    Uint32 cooldown;
     Uint32 lastShot = 0;
     Uint32 lastCount = 0;
     Uint32 phaseTime = 0;
@@ -24,12 +24,13 @@ struct Phase4
     Texture bullet_texture;
     Texture telegraph_texture;
 
-    Phase4(const Graphics &graphics): bullet_texture(graphics.renderer), telegraph_texture(graphics.renderer)
+    Phase4(const Graphics &graphics, int &gameLoop): bullet_texture(graphics.renderer), telegraph_texture(graphics.renderer)
     {
         bullet_texture.loadFromFile(BULLET_FILE_PATH);
         telegraph_texture.loadFromFile(TELEGRAPH_BOMB_PATH);
 
         lastCount = SDL_GetTicks();
+        cooldown = 1000 - 100*gameLoop;
     }
 
     void generateBullet()
@@ -88,10 +89,10 @@ struct Phase4
     }
 };
 
-inline gamePhase doPhase4(Graphics& graphics, player& myPlayer)
+inline gamePhase doPhase4(Graphics& graphics, player& myPlayer, int &gameLoop)
 {
     Sound collide(COLLIDE_SOUND_PATH);
-    Phase4 phase4(graphics);
+    Phase4 phase4(graphics, gameLoop);
     SDL_Event e;
     while (true)
     {

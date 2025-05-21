@@ -14,11 +14,11 @@
 #define PLAY "img\\play.png"
 #define LINE_PATH "img\\line.png"
 
-const int title_size = 50;
+const int title_size = 160;
         SDL_Rect play_b = {SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2, 100, 100};
         SDL_Rect music_b = {play_b.x-200, play_b.y+100, 100, 100};
         SDL_Rect sound_b = {play_b.x+200, play_b.y+100, 100, 100};
-        SDL_Rect title_b = {(SCREEN_WIDTH - 100)/2, 100, 100, 100};
+        SDL_Rect title_b = {100, 100, SCREEN_WIDTH-200, 150};
 
 class Intro
 {
@@ -47,8 +47,8 @@ class Intro
         startTime = SDL_GetTicks();
 
         Font gameFont;
-        gameFont.loadFromFile(FONT_PATH, title_size);
-        title.loadFromRenderedText("SHAPES ESCAPE", gameFont, ENEMY_COLOR);
+        gameFont.loadFromFile("assets\\Random Wednesday.ttf", title_size);
+        title.loadFromRenderedText("Shapes Escape", gameFont, ENEMY_COLOR);
 
     }
 
@@ -60,7 +60,7 @@ class Intro
         SDL_Rect dsc = {line_dsc.x, line_dsc.y, static_cast<int>(lineRatio*line_dsc.w), line_dsc.h};
         SDL_RenderCopy(graphics.renderer, line, &src, &dsc);
 
-        title.render((SCREEN_WIDTH - title.getWidth())/2, 100);
+        title.renderBasic(title_b);
         play.render();
         if (graphics.music)
         {
@@ -87,12 +87,18 @@ bool processClickAndPlay(SDL_Event& e)
         if (graphics.music)
         {
             if (music_on.processClick(graphics, e))
-                graphics.music = false;
+                {
+                    graphics.music = false;
+                    graphics.mus.pause();
+                }
         }
         else
         {
             if (music_off.processClick(graphics, e))
-                graphics.music = true;
+                {
+                    graphics.music = true;
+                    graphics.mus.play();
+                }
         }
 
         if (graphics.sound)

@@ -9,6 +9,8 @@
 
 #define MESSAGE_BOX_PATH "img\\rectangle.png"
 
+#define FONT_PATH "assets\\PixelSansSerif.ttf"
+
 const int text_size = 12;
 
     SDL_Rect quit_box = {150, 100, 500, 400};
@@ -119,19 +121,22 @@ quitRespond doPhaseQuit(Graphics &graphics)
     quitRespond res = quitRespond::none;
     SDL_Event e;
     while (res!=quitRespond::quit)
-    switch(res)
     {
-    case quitRespond::none:
-        if (SDL_PollEvent(&e))
+            switch(res)
         {
-            graphics.prepareScene();
-            res = phaseQuit.processClick(e);
-            phaseQuit.render();
-            graphics.presentScene();
+        case quitRespond::none:
+            if (SDL_PollEvent(&e))
+            {
+                graphics.prepareScene();
+                res = phaseQuit.processClick(e);
+                phaseQuit.render();
+                graphics.presentScene();
+            }
+        break;
+        default:
+            return res;
         }
-    break;
-    default:
-        return res;
+        SDL_Delay(10);
     }
     return res;
 }

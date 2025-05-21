@@ -11,7 +11,7 @@
 struct Phase2
 {
     std::vector<BulletType2> bullets;
-    Uint32 cooldown = 1000;
+    Uint32 cooldown;
     Uint32 lastShot = 0;
     Uint32 lastCount = 0;
     Uint32 phaseTime = 0;
@@ -21,10 +21,11 @@ struct Phase2
     bool down = 1;
 
 public:
-    Phase2(const Graphics &graphics) : bullet_texture(graphics.renderer)
+    Phase2(const Graphics &graphics, int &gameLoop) : bullet_texture(graphics.renderer)
     {
         bullet_texture.loadFromFile(BULLET_FILE_PATH);
         lastCount = SDL_GetTicks();
+        cooldown = 1000 - gameLoop*100;
     }
     void generateBullet()
     {
@@ -85,10 +86,10 @@ public:
     }
 };
 
-inline gamePhase doPhase2(Graphics& graphics, player& myPlayer)
+inline gamePhase doPhase2(Graphics& graphics, player& myPlayer, int &gameLoop)
 {
     Sound collide(COLLIDE_SOUND_PATH);
-    Phase2 phase2(graphics);
+    Phase2 phase2(graphics, gameLoop);
     SDL_Event e;
     while (true)
     {

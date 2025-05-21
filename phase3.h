@@ -13,16 +13,17 @@
 struct Phase3
 {
     std::vector<laserBeam> beams;
-    Uint32 cooldown = 500;
+    Uint32 cooldown;
     Uint32 lastShot = 0;
     Uint32 lastCount = 0;
     Uint32 phaseTime = 0;
     Phase2 phase2;
     bool vertical = 1;
 
-    Phase3(const Graphics &graphics) : phase2(graphics)
+    Phase3(const Graphics &graphics, int &gameLoop) : phase2(graphics, gameLoop)
     {
         lastCount = SDL_GetTicks();
+        cooldown = 500 - 50*gameLoop;
     }
     void generateBullet()
     {
@@ -93,12 +94,12 @@ struct Phase3
     }
 };
 
-inline gamePhase doPhase3(Graphics& graphics, player& myPlayer)
+inline gamePhase doPhase3(Graphics& graphics, player& myPlayer, int &gameLoop)
 {
     Sound collide(COLLIDE_SOUND_PATH);
     Texture bullet_texture(graphics.renderer);
     bullet_texture.loadFromFile(BULLET_FILE_PATH);
-    Phase3 phase3(graphics);
+    Phase3 phase3(graphics, gameLoop);
     SDL_Event e;
     while (true)
     {

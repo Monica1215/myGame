@@ -15,11 +15,12 @@ const SDL_Color ENEMY_COLOR = {255, 0 ,102, 255};
 const std::string MUSIC_THEME_PATH = "assets\\popstar_love.mp3";
 #define PHASE_TIME 10000
 #define BULLET_FILE_PATH "img\\bullet.png"
-#define FONT_PATH "assets\\PixelSansSerif.ttf"
 
 #define CLICK_SOUND_PATH "assets\\click.wav"
 #define COLLIDE_SOUND_PATH "assets\\collide.wav"
 #define LAZER_SOUND_PATH "assets\\lazer-shot.wav"
+
+#define BACKGROUND_PATH "img\\background.png"
 
 inline float generateRandom()
 {

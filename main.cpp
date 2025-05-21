@@ -14,23 +14,15 @@
 #include "phaseTransition.h"
 #include "phaseQuit.h"
 #include "button.h"
+#include "gameOver.h"
 using namespace std;
-
-void waitUntilKeyPressed()
-{
-    SDL_Event e;
-    while (true) {
-        if ( SDL_PollEvent(&e) != 0 &&
-             (e.type == SDL_KEYDOWN || e.type == SDL_QUIT) )
-            return;
-        SDL_Delay(100);
-    }
-}
 
 GameStates doIntro(Graphics& graphics)
 {
     Intro intro(graphics);
     SDL_Event e;
+    if (graphics.music)
+        graphics.mus.play();
     while (true)
     {
         graphics.prepareScene();
@@ -47,25 +39,28 @@ GameStates doIntro(Graphics& graphics)
 }
 
 
-GameStates doPlaying(Graphics& graphics)
+GameStates doPlaying(Graphics& graphics, player &myPlayer)
 {
-    player myPlayer;
-    gamePhase currentPhase = gamePhase::Phase4;
+    int gameLoop = 0;
+    gamePhase currentPhase = gamePhase::Phase1;
     while (currentPhase!=gamePhase::quit)
     switch (currentPhase)
     {
         case gamePhase::Phase1:
-            doPhaseTransition(graphics, myPlayer, currentPhase);
-            currentPhase = doPhase1(graphics, myPlayer);
+            currentPhase = doPhase1(graphics, myPlayer, gameLoop);
+            currentPhase = doPhaseTransition(graphics, myPlayer, currentPhase);
             break;
         case gamePhase::Phase2:
-            doPhaseTransition(graphics, myPlayer, currentPhase);
-            currentPhase = doPhase2(graphics, myPlayer);
+            currentPhase = doPhase2(graphics, myPlayer, gameLoop);
+            currentPhase = doPhaseTransition(graphics, myPlayer, currentPhase);
         case gamePhase::Phase3:
-            currentPhase = doPhase3(graphics, myPlayer);
+            currentPhase = doPhase3(graphics, myPlayer, gameLoop);
+            currentPhase = doPhaseTransition(graphics, myPlayer, currentPhase);
             break;
         case gamePhase::Phase4:
-            currentPhase = doPhase4(graphics, myPlayer);
+            currentPhase = doPhase4(graphics, myPlayer, gameLoop);
+            currentPhase = doPhaseTransition(graphics, myPlayer, currentPhase);
+            gameLoop++;
             break;
         case gamePhase::gameOver:
             return GameStates::GameOver;
@@ -78,11 +73,41 @@ GameStates doPlaying(Graphics& graphics)
     return GameStates::Quit;
 }
 
+GameStates doGameOver(Graphics &graphics, player &myPlayer)
+{
+    GameOver gameOver(graphics, myPlayer);
+    gameOverRespond res = gameOverRespond::none;
+    SDL_Event e;
+    while (true)
+    {
+        graphics.prepareScene();
+        while (SDL_PollEvent(&e))
+        {
+            res = gameOver.processClick(e);
+            switch(res)
+            {
+            case gameOverRespond::home:
+                return GameStates::Intro;
+            case gameOverRespond::replay:
+                return GameStates::Playing;
+            case gameOverRespond::quit:
+                return GameStates::Quit;
+            default:
+                break;
+            }
+        }
+        gameOver.render();
+        graphics.presentScene();
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
     Graphics graphics;
     graphics.init();
+
+    player myPlayer;
 
     GameStates current_states = GameStates::Intro;
     while (current_states!=GameStates::Quit)
@@ -91,15 +116,16 @@ int main(int argc, char *argv[])
         {
         case GameStates::Intro:
             current_states = doIntro(graphics);
-            if (graphics.music)
-                graphics.mus.play();
             break;
         case GameStates::Playing:
-            current_states = doPlaying(graphics);
+            cout << boolalpha << myPlayer.isDead();
+            current_states = doPlaying(graphics, myPlayer);
             break;
         case GameStates::GameOver:
-            current_states = GameStates::Quit;
+            current_states = doGameOver(graphics, myPlayer);
+            cout << static_cast<int>(current_states);
             cout << "GAME OVER";
+            myPlayer.reset();
             break;
         case GameStates::Quit:
             cout << "QUIT";

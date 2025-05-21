@@ -22,11 +22,11 @@ struct trailDot
 struct player
 {
     SDL_Rect rect;
-    const int speed;
+    int speed;
     int lives;
-    bool isBlinking = 0;
-    Uint32 blinkStartTime = 0;
-    bool visible = 1;
+    bool isBlinking;
+    Uint32 blinkStartTime;
+    bool visible;
     std::deque<trailDot> trails;
     Uint32 survivedTime, startCount;
     void turnNorth();
@@ -42,6 +42,10 @@ struct player
     void updateTimePause(Uint32 pauseDuration)
     {
         survivedTime -= pauseDuration;
+    }
+    void reset()
+    {
+        *this = player();
     }
 };
 

@@ -29,10 +29,17 @@ void player::turnEast()
         rect.x = std:: min(rect.x, SCREEN_WIDTH - rect.w);
 }
 
-player::player():rect{SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE}, speed(PLAYER_SPEED), lives(3)
+player::player()
 {
-    startCount = SDL_GetTicks();
+    rect = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE};
+    speed = PLAYER_SPEED;
+    lives = 3;
+    isBlinking = false;
+    blinkStartTime = 0;
+    visible = true;
+    trails.clear();
     survivedTime = 0;
+    startCount = SDL_GetTicks();
 }
 
 bool player::isDead()
@@ -42,6 +49,7 @@ bool player::isDead()
 
 void player::loseLife()
 {
+
         isBlinking = true;
         blinkStartTime = SDL_GetTicks();
         lives--;

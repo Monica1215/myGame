@@ -39,6 +39,7 @@
 		<Unit filename="defs.h" />
 		<Unit filename="font.cpp" />
 		<Unit filename="font.h" />
+		<Unit filename="gameOver.h" />
 		<Unit filename="graphics.h" />
 		<Unit filename="intro.h" />
 		<Unit filename="laser_beam.h" />
@@ -48,6 +49,7 @@
 		<Unit filename="phase1.h" />
 		<Unit filename="phase2.h" />
 		<Unit filename="phase3.h" />
+		<Unit filename="phase4.h" />
 		<Unit filename="phaseQuit.h" />
 		<Unit filename="phaseTransition.h" />
 		<Unit filename="player.cpp" />

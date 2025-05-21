@@ -11,7 +11,8 @@
 #define EXPANDING_BOMB_TIME 500
 #define SHRINKING_BOMB_TIME 200
 
-#define TELEGRAPH_BOMB_PATH "img\\telegraph_bomb.png"
+
+#define TELEGRAPH_BOMB_PATH "img\\warning_circle.png"
 
 enum class BombPhase
 {
@@ -33,7 +34,7 @@ struct circleBomb
         phaseStartTime = SDL_GetTicks();
         x = SCREEN_WIDTH*generateRandom();
         y = SCREEN_HEIGHT*generateRandom();
-        radius = BOMB_RADIUS;
+        radius = BOMB_RADIUS - 10;
     }
 
     void update()
