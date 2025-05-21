@@ -120,22 +120,15 @@ quitRespond doPhaseQuit(Graphics &graphics)
     PhaseQuit phaseQuit(graphics);
     quitRespond res = quitRespond::none;
     SDL_Event e;
-    while (res!=quitRespond::quit)
+    while (res==quitRespond::none)
     {
-            switch(res)
+        graphics.prepareScene();
+        while (SDL_PollEvent(&e))
         {
-        case quitRespond::none:
-            if (SDL_PollEvent(&e))
-            {
-                graphics.prepareScene();
-                res = phaseQuit.processClick(e);
-                phaseQuit.render();
-                graphics.presentScene();
-            }
-        break;
-        default:
-            return res;
+            res = phaseQuit.processClick(e);
         }
+        phaseQuit.render();
+        graphics.presentScene();
         SDL_Delay(10);
     }
     return res;

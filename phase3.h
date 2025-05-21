@@ -80,7 +80,6 @@ struct Phase3
 
     bool checkPhaseCollision(const player& myPlayer)////////////////
     {
-        if (myPlayer.isBlinking) return false;
         for (auto& beam : beams)
         {
             if (checkCollision(beam, myPlayer)) return true;

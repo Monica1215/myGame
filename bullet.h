@@ -52,6 +52,7 @@ struct Bullet
 
 inline bool checkCollision(const Bullet& bullet, const player& myPlayer)
 {
+    if (myPlayer.isInvincible()) return false;
     int closestX = std :: clamp(static_cast<int>(bullet.x), static_cast<int>(myPlayer.rect.x), static_cast<int>(myPlayer.rect.x+myPlayer.rect.w));
     int closestY = std :: clamp(static_cast<int>(bullet.y), static_cast<int>(myPlayer.rect.y), static_cast<int>(myPlayer.rect.y+myPlayer.rect.h));
 

@@ -66,7 +66,7 @@ struct Phase1
     {
         for (auto& bullet : bullets)
         {
-            if (!myPlayer.isBlinking &&checkCollision(bullet, myPlayer))
+            if (checkCollision(bullet, myPlayer))
                 return true;
         }
         return false;

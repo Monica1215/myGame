@@ -70,7 +70,7 @@ public:
 
     bool checkPhaseCollision(const player& myPlayer)
     {
-        if (myPlayer.isBlinking) return false;
+
         for (auto& bullet : bullets)
         {
             if (bullet.visible) if (checkCollision(bullet.bigBullet, myPlayer)) return true;

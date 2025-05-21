@@ -116,6 +116,7 @@ struct laserBeam
 
 inline bool checkCollision(const laserBeam& beam, const player& myPlayer)
 {
+    if (myPlayer.isInvincible()) return false;
     if (!beam.isHarmful()) return false;
 
     return SDL_HasIntersection(&beam.rect, &myPlayer.rect);

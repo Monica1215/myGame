@@ -103,6 +103,7 @@ struct circleBomb
 
 inline bool checkCollision(const circleBomb& bullet, const player& myPlayer)
 {
+    if (myPlayer.isInvincible()) return false;
     if (!bullet.isHarmful()) return false;
 
     int closestX = std :: clamp(static_cast<int>(bullet.x), static_cast<int>(myPlayer.rect.x), static_cast<int>(myPlayer.rect.x+myPlayer.rect.w));

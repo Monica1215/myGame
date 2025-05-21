@@ -75,7 +75,6 @@ struct Phase4
 
     bool checkPhaseCollision(const player& myPlayer)
     {
-        if (myPlayer.isBlinking) return false;
         for (auto& b : bombs)
         {
             if (checkCollision(b, myPlayer)) return true;

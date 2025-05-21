@@ -5,30 +5,6 @@
 
 #include "player.h"
 
-void player::turnNorth()
-{
-        rect.y-=speed;
-        rect.y = std::max(0, rect.y);
-}
-
-void player::turnSouth()
-{
-        rect.y+=speed;
-        rect.y = std::min(rect.y, SCREEN_HEIGHT - rect.h);
-}
-
-void player::turnWest()
-{
-        rect.x-=speed;
-        rect.x = std::max(rect.x, 0);
-}
-
-void player::turnEast()
-{
-        rect.x+=speed;
-        rect.x = std:: min(rect.x, SCREEN_WIDTH - rect.w);
-}
-
 player::player()
 {
     rect = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE};
@@ -40,6 +16,9 @@ player::player()
     trails.clear();
     survivedTime = 0;
     startCount = SDL_GetTicks();
+    isDashing = false;
+    lastVx = 0; lastVy = 0;
+    lastDash = 0;
 }
 
 bool player::isDead()
@@ -82,10 +61,45 @@ void player::moveCheck()
         startCount = current;
 
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-        if (currentKeyStates[SDL_SCANCODE_UP]) turnNorth();
-        if (currentKeyStates[SDL_SCANCODE_DOWN]) turnSouth();
-        if (currentKeyStates[SDL_SCANCODE_LEFT]) turnWest();
-        if (currentKeyStates[SDL_SCANCODE_RIGHT]) turnEast();
+
+        int vx = 0;
+        int vy = 0;
+        if (currentKeyStates[SDL_SCANCODE_UP]) vy -= 1;
+        if (currentKeyStates[SDL_SCANCODE_DOWN]) vy += 1;
+        if (currentKeyStates[SDL_SCANCODE_LEFT]) vx -= 1;
+        if (currentKeyStates[SDL_SCANCODE_RIGHT]) vx += 1;
+
+        if (!isDashing && currentKeyStates[SDL_SCANCODE_SPACE] && current - lastDash > DashCoolDown && survivedTime>FIRST_DASH)
+        {
+            lastVx = vx; lastVy = vy;
+            if (lastVx==0&&lastVy==0) lastVx = 1;
+            if (lastVx!=0&&lastVy!=0)
+            {
+                float scale = 1.0f / sqrtf(2.0f);
+                lastVx = lastVx * scale;
+                lastVy = lastVy * scale;
+            }
+            isDashing = true;
+            dashStart = current;
+            lastDash = current;
+        }
+        if (isDashing)
+        {
+            rect.x += lastVx * DASH_SPEED;
+            rect.y += lastVy * DASH_SPEED;
+            if (current - dashStart >= DASH_TIME) {
+                isDashing = false;
+            }
+        }
+        else
+        {
+            rect.x += vx * PLAYER_SPEED;
+            rect.y += vy * PLAYER_SPEED;
+        }
+
+        rect.x = std::clamp(rect.x, 0, SCREEN_WIDTH - rect.w);
+        rect.y = std::clamp(rect.y, 0, SCREEN_HEIGHT - rect.h);
+
         trailDot currentTrail(this->rect);
         if (trails.size() > number_of_trail)
         {

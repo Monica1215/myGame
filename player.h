@@ -11,6 +11,12 @@
 #define PLAYER_SIZE 20
 #define number_of_trail 15
 #define BLINKING_TIME 2000
+#define DASH_TIME 200
+#define DASH_SPEED 15
+#define FIRST_DASH 30000
+#define DashCoolDown 1000
+
+
 struct trailDot
 {
     SDL_Rect rect;
@@ -21,24 +27,39 @@ struct trailDot
 
 struct player
 {
+    //basic info
     SDL_Rect rect;
     int speed;
     int lives;
+
+    //for blink
     bool isBlinking;
     Uint32 blinkStartTime;
     bool visible;
+
+    //for effects
     std::deque<trailDot> trails;
+
+    //for score
     Uint32 survivedTime, startCount;
-    void turnNorth();
-    void turnSouth();
-    void turnWest();
-    void turnEast();
+
+    //for dashing
+    bool isDashing = false;
+    Uint32 dashStart;
+    float lastVx, lastVy;
+    Uint32 lastDash;
+
+
     player();
     bool isDead();
     void loseLife();
     void render(const Graphics& graphics);
     void moveCheck();
     void blink();
+    bool isInvincible() const
+    {
+        return (isBlinking||isDashing);
+    }
     void updateTimePause(Uint32 pauseDuration)
     {
         survivedTime -= pauseDuration;
