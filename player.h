@@ -8,6 +8,7 @@
 #include "graphics.h"
 #include "texture.h"
 #include "font.h"
+#include "ripple.h"
 
 #define PLAYER_SPEED 5
 #define PLAYER_SIZE 20
@@ -52,6 +53,8 @@ struct player
     Uint32 dashStart;
     float lastVx, lastVy;
     Uint32 lastDash;
+    Ripple ripple;
+    Texture ripple_t;
 
 
     player(Graphics &graphics);

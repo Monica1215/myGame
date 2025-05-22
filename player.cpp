@@ -5,7 +5,7 @@
 #include "player.h"
 
 
-player::player(Graphics &graphics): score(graphics.renderer)
+player::player(Graphics &graphics): score(graphics.renderer), ripple(0, 0, 0, 0), ripple_t(graphics.renderer)
 {
     rect = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_SIZE, PLAYER_SIZE};
     speed = PLAYER_SPEED;
@@ -23,6 +23,9 @@ player::player(Graphics &graphics): score(graphics.renderer)
     lastScore = 0;
     gameFont.loadFromFile("assets\\Random Wednesday.ttf", 30);
     score.loadFromRenderedText(secondToTimer(lastScore), gameFont, WHITE_COLOR);
+
+    ripple_t.loadFromFile(RIPPLE_PATH);
+    ripple_t.setBlendMode(SDL_BLENDMODE_BLEND);
 
 }
 
@@ -84,6 +87,7 @@ void player::render(const Graphics& graphics)
             score.loadFromRenderedText(secondToTimer(lastScore), gameFont, WHITE_COLOR);
         }
         score.render(700, 30);
+        if (isDashing) ripple.render(ripple_t);
 
 }
 
@@ -105,6 +109,9 @@ void player::moveCheck()
 
         if (!isDashing && currentKeyStates[SDL_SCANCODE_SPACE] && current - lastDash > DashCoolDown && survivedTime>FIRST_DASH)
         {
+            Ripple tmp(rect.x + rect.w/2, rect.y + rect.h/2, 60, DASH_TIME);
+            ripple = tmp;
+
             lastVx = vx; lastVy = vy;
             if (lastVx==0&&lastVy==0) lastVx = 1;
             if (lastVx!=0&&lastVy!=0)
@@ -119,6 +126,7 @@ void player::moveCheck()
         }
         if (isDashing)
         {
+            ripple.update();
             rect.x += lastVx * DASH_SPEED;
             rect.y += lastVy * DASH_SPEED;
             if (current - dashStart >= DASH_TIME) {

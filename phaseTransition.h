@@ -12,42 +12,6 @@
 #define TRANSITION_DURATION 2000
 #define RIPPLE_COOLDOWN 500
 #define RIPPLE_PATH "img\\ripple.png"
-class Ripple
-{
-    int x, y;
-    int radius;
-    Uint8 alpha;
-    Uint32 startTime = 0;
-public:
-    Ripple(int _x, int _y )
-    {
-        x = _x;
-        y = _y;
-        radius = 0;
-        alpha = 255;
-        startTime = SDL_GetTicks();
-    }
-    bool isAlive() const
-    {
-        return (SDL_GetTicks()-startTime <= RIPPLE_DURATION);
-    }
-
-    void update()
-    {
-        if (!isAlive()) return;
-        Uint32 elapsed = SDL_GetTicks() - startTime;
-        float t = 1.0*elapsed/RIPPLE_DURATION;
-        radius = SCREEN_WIDTH*t;
-        alpha = 255*(1-t);
-    }
-    void render(Texture &texture) const
-    {
-        if (!isAlive()) return;
-        texture.setAlpha(alpha);
-        SDL_Rect dsc = {x-radius, y-radius, 2*radius, 2*radius};
-        texture.renderBasic(dsc);
-    }
-};
 
 inline gamePhase doPhaseTransition(const Graphics &graphics, player &myPlayer, gamePhase current)
 {
@@ -77,7 +41,7 @@ inline gamePhase doPhaseTransition(const Graphics &graphics, player &myPlayer, g
         currentShot = SDL_GetTicks();
         if (currentShot - lastShot > RIPPLE_COOLDOWN)
         {
-            Ripple r(0, SCREEN_HEIGHT/2);
+            Ripple r(0, SCREEN_HEIGHT/2, SCREEN_WIDTH, RIPPLE_DURATION);
             //Ripple r(myPlayer.rect.x + myPlayer.rect.w/2, myPlayer.rect.y + myPlayer.rect.h/2);
             ripples.push_back(r);
             lastShot = currentShot;
