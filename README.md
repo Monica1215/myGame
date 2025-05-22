@@ -1,3 +1,4 @@
+
 ## Đinh Thị Hậu 24021462
 # Chủ đề game
 Shapes Escape - di chuyển nhân vật né các vật cản hình khối
@@ -31,3 +32,13 @@ SFX: Freesound.org
 17. Pause
 18. Lives
 
+##Ngưỡng điểm mong muốn 9-10:
+Game có nhiều hiệu ứng của đạn, hệ thống đạn đa dạng, và nhân vật.
+Nhân vật:
+- Di chuyển mượt, không tràn màn hình, lướt(dash) được.
+- Có đuôi, vệt sáng.
+- Có hiệu ứng nhấp nháy và thay đổi kích thước khi mất mạng
+Đạn: - có hiệu ứng cảnh báo, làm mờ, nhấp nháy nhẹ
+Game play:
+- Có tính điểm theo thời gian sống sót, có lưu highscore
+- 4 phase lặp lại vô hạn, thời gian cooldown của đạn giảm dần
